@@ -1,16 +1,18 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 
+//TODO make it work in offline(manifest)
+
 export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
         <Image
           className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
+          src="/workout-log-logo.png"
+          alt="logo"
+          width={63.4}
+          height={73}
           priority
         />
         <div className={styles.intro}>
