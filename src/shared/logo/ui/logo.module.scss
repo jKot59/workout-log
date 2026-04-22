@@ -1,0 +1,42 @@
+.logo {
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  gap: 10px;
+  color: var(--background);
+  & > span {
+    font-size: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+
+  .image {
+    position: relative;
+
+    & > img {
+      position: relative;
+      z-index: 2;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 0;
+      display: block;
+      width: 100%;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      background: var(--background);
+      z-index: 1;
+    }
+  }
+}
+
+:global(.ant-layout-sider-collapsed) .logo span {
+  opacity: 0;
+  width: 0;
+  margin: 0;
+  overflow: hidden;
+}
