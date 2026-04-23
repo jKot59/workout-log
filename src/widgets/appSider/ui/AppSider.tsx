@@ -1,37 +1,44 @@
 'use client';
 
-import { DesktopOutlined, PieChartOutlined } from '@ant-design/icons';
-import { Menu, MenuProps } from 'antd';
+import { Button } from '@/shared/button/Button';
+import { Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
-import { useState } from 'react';
-
-type MenuItem = Required<MenuProps>['items'][number];
-
-function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem;
-}
+import { ViewTransition } from 'react';
+import styles from './appSider.module.scss';
+import { useAppSiderLogic } from '../model/useAppSiderLogic';
 
 export function AppSider({ aboveMenuSlot }: Readonly<{ aboveMenuSlot: React.ReactNode }>) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [items, setItems] = useState<MenuItem[]>(() => [
-    getItem('Monday', '1', <PieChartOutlined />),
-    getItem('Thursday', '2', <DesktopOutlined />),
-  ]);
-
-  function addNewDay() {
-    setItems((prev) => [...prev, getItem('X', 'x', <PieChartOutlined />)]);
-  }
+  const { state, handlers } = useAppSiderLogic();
 
   return (
-    <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+    <Sider collapsible collapsed={state.collapsed} onCollapse={(value) => handlers.setCollapsed(value)}>
       {aboveMenuSlot}
-      <Menu theme='dark' defaultSelectedKeys={['1']} mode='inline' items={items} />
-      <button onClick={addNewDay}> Add day</button>
+
+      {state.items.length ? (
+        <Menu className={styles.menu} theme='dark' mode='inline' items={state.items} />
+      ) : (
+        <div className={styles.empty_day}>No trainings</div>
+      )}
+
+      <div className={styles.days_list}>
+        {state.availableDays.length && (
+          <Button className={styles.btn} onClick={handlers.toggleDaysList}>
+            {state.isAvailableDaysListShown ? 'Cancel' : 'Add day'}
+          </Button>
+        )}
+
+        {state.isAvailableDaysListShown && (
+          <ViewTransition default={'none'} enter='slide-up' exit='slide-down'>
+            <ul className={styles.list}>
+              {state.availableDays.map((day) => (
+                <li key={day} onClick={() => handlers.handleSelectDay(day)}>
+                  {day}
+                </li>
+              ))}
+            </ul>
+          </ViewTransition>
+        )}
+      </div>
     </Sider>
   );
 }

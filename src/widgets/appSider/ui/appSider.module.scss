@@ -1,1 +1,34 @@
+.btn {
+  width: 100%;
+}
 
+.days_list {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 16px;
+  color: var(--pure-white);
+  li {
+    cursor: pointer;
+  }
+}
+
+.empty_day {
+  margin: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  color: var(--pure-white);
+}
+
+.menu {
+  margin-top: 6px;
+}
