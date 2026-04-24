@@ -1,11 +1,12 @@
 'use client';
 
-import { Button } from '@/shared/button/Button';
+import { Button } from '@/shared/ui/button/Button';
 import { Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
+import Link from 'next/link';
 import { ViewTransition } from 'react';
-import styles from './appSider.module.scss';
 import { useAppSiderLogic } from '../model/useAppSiderLogic';
+import styles from './appSider.module.scss';
 
 export function AppSider({ aboveMenuSlot }: Readonly<{ aboveMenuSlot: React.ReactNode }>) {
   const { state, handlers } = useAppSiderLogic();
@@ -14,8 +15,13 @@ export function AppSider({ aboveMenuSlot }: Readonly<{ aboveMenuSlot: React.Reac
     <Sider collapsible collapsed={state.collapsed} onCollapse={(value) => handlers.setCollapsed(value)}>
       {aboveMenuSlot}
 
-      {state.items.length ? (
-        <Menu className={styles.menu} theme='dark' mode='inline' items={state.items} />
+      {state.menuItems.length ? (
+        <Menu
+          className={styles.menu}
+          theme='dark'
+          mode='inline'
+          items={state.menuItems.map((day) => handlers.createMenuItem(<Link href={day.toLowerCase()}>{day}</Link>, String(day)))}
+        />
       ) : (
         <div className={styles.empty_day}>No trainings</div>
       )}

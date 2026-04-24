@@ -1,4 +1,4 @@
-import { Logo } from '@/shared/logo/ui/Logo';
+import { Logo } from '@/shared/ui/logo/Logo';
 import { AppSider } from '@/widgets/appSider';
 import { MainHeader } from '@/widgets/mainHeader';
 import { Layout } from 'antd';

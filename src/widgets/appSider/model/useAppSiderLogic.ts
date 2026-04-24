@@ -1,7 +1,8 @@
-import { startTransition, useState } from 'react';
+import { startTransition, useEffect, useState } from 'react';
 import { DayOfWeek, MenuItem } from './types';
+import { arraysSymmetricDifference } from '@/shared/lib/arraysSymmetricDifference';
 
-function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
+function createMenuItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
   return {
     key,
     icon,
@@ -12,7 +13,7 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
 
 export function useAppSiderLogic() {
   const [collapsed, setCollapsed] = useState(false);
-  const [items, setItems] = useState<MenuItem[]>(() => []);
+  const [menuItems, setMenuItems] = useState<DayOfWeek[]>(() => []);
   const [isAvailableDaysListShown, setIsAvailableDaysListShown] = useState(false);
 
   const [availableDays, setAvailableDays] = useState<DayOfWeek[]>(() => [
@@ -30,14 +31,32 @@ export function useAppSiderLogic() {
   }
 
   function handleSelectDay(day: DayOfWeek) {
-    setItems((prev) => [...prev, getItem(day, day)]);
+    setMenuItems((prev) => [...prev, day]);
     setAvailableDays((prev) => prev.filter((item) => item !== day));
     toggleDaysList();
+
+    const programs = getMenuItemsFromLocalStorage();
+    programs.push(day);
+
+    localStorage.setItem('programs', JSON.stringify(programs));
   }
+
+  function getMenuItemsFromLocalStorage() {
+    const programsStr = localStorage.getItem('programs');
+    const programs: DayOfWeek[] = programsStr ? JSON.parse(programsStr) : [];
+    return programs;
+  }
+
+  useEffect(() => {
+    const programs = getMenuItemsFromLocalStorage();
+
+    setMenuItems(programs);
+    setAvailableDays((prev) => arraysSymmetricDifference(prev, programs));
+  }, []);
 
   return {
     state: {
-      items,
+      menuItems,
       collapsed,
       availableDays,
       isAvailableDaysListShown,
@@ -46,6 +65,7 @@ export function useAppSiderLogic() {
       setCollapsed,
       toggleDaysList,
       handleSelectDay,
+      createMenuItem,
     },
   };
 }
