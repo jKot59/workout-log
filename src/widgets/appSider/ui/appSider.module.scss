@@ -32,3 +32,10 @@
 .menu {
   margin-top: 6px;
 }
+
+.day {
+  display: block;
+  &:first-letter {
+    text-transform: uppercase;
+  }
+}

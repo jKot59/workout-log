@@ -20,7 +20,14 @@ export function AppSider({ aboveMenuSlot }: Readonly<{ aboveMenuSlot: React.Reac
           className={styles.menu}
           theme='dark'
           mode='inline'
-          items={state.menuItems.map((day) => handlers.createMenuItem(<Link href={day.toLowerCase()}>{day}</Link>, String(day)))}
+          items={state.menuItems.map((day) =>
+            handlers.createMenuItem(
+              <Link href={day.toLowerCase()} className={styles.day}>
+                {day}
+              </Link>,
+              day
+            )
+          )}
         />
       ) : (
         <div className={styles.empty_day}>No trainings</div>

@@ -1,6 +1,7 @@
 import { startTransition, useEffect, useState } from 'react';
 import { DayOfWeek, MenuItem } from './types';
-import { arraysSymmetricDifference } from '@/shared/lib/arraysSymmetricDifference';
+import { arraysSymmetricDifference } from '@/shared/lib/helpers/arraysSymmetricDifference';
+import { IndexedDBManager } from '@/shared/lib/indexedDB/IndexedDBManager';
 
 function createMenuItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
   return {
@@ -26,32 +27,33 @@ export function useAppSiderLogic() {
     'Sunday',
   ]);
 
+  const db = new IndexedDBManager('WorkoutLogDatabase', 1, 'exercises');
+
   function toggleDaysList() {
     startTransition(() => setIsAvailableDaysListShown((prev) => !prev));
   }
 
-  function handleSelectDay(day: DayOfWeek) {
+  async function handleSelectDay(day: DayOfWeek) {
     setMenuItems((prev) => [...prev, day]);
     setAvailableDays((prev) => prev.filter((item) => item !== day));
     toggleDaysList();
 
-    const programs = getMenuItemsFromLocalStorage();
-    programs.push(day);
-
-    localStorage.setItem('programs', JSON.stringify(programs));
-  }
-
-  function getMenuItemsFromLocalStorage() {
-    const programsStr = localStorage.getItem('programs');
-    const programs: DayOfWeek[] = programsStr ? JSON.parse(programsStr) : [];
-    return programs;
+    await db.openDB();
+    await db.addItem({ name: day.toLowerCase(), exercises: [] });
   }
 
   useEffect(() => {
-    const programs = getMenuItemsFromLocalStorage();
+    const loadProducts = async () => {
+      await db.openDB();
+      const programs = await db.getAllItems();
 
-    setMenuItems(programs);
-    setAvailableDays((prev) => arraysSymmetricDifference(prev, programs));
+      const takeOnlyDays = programs.map((program) => program.name);
+
+      setMenuItems(takeOnlyDays);
+
+      setAvailableDays((prev) => arraysSymmetricDifference(prev, takeOnlyDays) as DayOfWeek[]);
+    };
+    loadProducts();
   }, []);
 
   return {
