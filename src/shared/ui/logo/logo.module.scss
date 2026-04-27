@@ -11,6 +11,10 @@
     white-space: nowrap;
     transition: opacity 0.2s;
   }
+
+  &:hover {
+    color: var(--pure-white);
+  }
 }
 
 .image {
