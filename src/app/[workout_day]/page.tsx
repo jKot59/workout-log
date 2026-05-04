@@ -15,8 +15,8 @@ export default async function TrainingDayPage({ params }: PageProps) {
     <section className={styles.page}>
       <h1>{workout_day}</h1>
 
-      <ExercisesList />
       <AddExerciseDrawer day={workout_day} />
+      <ExercisesList />
     </section>
   );
 }

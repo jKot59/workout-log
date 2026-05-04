@@ -5,6 +5,7 @@ import { Layout } from 'antd';
 import type { Metadata } from 'next';
 import './globals.css';
 import styles from './layout.module.scss';
+import { IndexedDBInitializer } from './providers/IndexedDBInitializer';
 
 export const metadata: Metadata = {
   title: 'Workout log',
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang='en'>
       <body>
+        <IndexedDBInitializer />
         <Layout className={styles.layout}>
           <AppSider aboveMenuSlot={<Logo />} />
 

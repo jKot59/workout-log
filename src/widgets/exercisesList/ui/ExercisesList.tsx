@@ -2,36 +2,24 @@
 
 import { useProgramsStore } from '@/stores/programs-store';
 import styles from './exercisesList.module.scss';
-import React, { useEffect } from 'react';
-import { IndexedDBManager } from '@/shared/lib/indexedDB/IndexedDBManager';
+import { ExercisesItem } from './ExercisesItem';
+import { Flex } from 'antd';
+import { useParams } from 'next/navigation';
+import { DayOfWeek } from '@/widgets/appSider';
 
 export function ExercisesList() {
-  const { programs, update } = useProgramsStore();
+  const { programs, isLoading } = useProgramsStore();
+  const { workout_day: day }: { workout_day: DayOfWeek } = useParams();
 
-  useEffect(() => {
-    (async () => {
-      const db = new IndexedDBManager('WorkoutLogDatabase', 1, 'exercises');
-
-      await db.openDB();
-      const programs = await db.getAllItems();
-
-      update(programs);
-    })();
-  }, []);
+  if (isLoading || programs === null) return <div>Loading...</div>;
 
   return (
-    <div className=''>
-      {programs?.map((program) => (
-        <React.Fragment key={program.name}>
-          {program.exercises.map((exercise) => (
-            <div key={exercise.name}>
-              {exercise.name}
-              <br />
-              {exercise.sets.map((set, i) => `Set ${i + 1}: reps ${set.reps ?? 0} \n`)}
-            </div>
-          ))}
-        </React.Fragment>
-      ))}
-    </div>
+    <Flex vertical gap={'medium'}>
+      {programs
+        .find((program) => program.name === day)
+        ?.exercises.map((exercise) => (
+          <ExercisesItem key={exercise.name} name={exercise.name} sets={exercise.sets} />
+        ))}
+    </Flex>
   );
 }
