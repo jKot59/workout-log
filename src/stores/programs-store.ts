@@ -1,10 +1,11 @@
 import { IndexedDBManager } from '@/shared/lib/indexedDB/IndexedDBManager';
 import { DayOfWeek } from '@/widgets/appSider';
+import { DataType } from '@/widgets/exercisesList';
 import { create } from 'zustand';
 
 export interface IExercise {
   name: string;
-  sets?: { date: string; reps: number[] }[];
+  sets?: { date: string; reps: DataType['reps'] }[];
 }
 
 interface IProgram {

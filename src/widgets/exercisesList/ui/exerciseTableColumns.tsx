@@ -3,7 +3,16 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { ColumnType } from 'antd/es/table';
 import { DataType } from './ExercisesItem';
 
-export const getExerciseColumns = (handleDelete: (date: string) => void, handleSave: (record: DataType) => void) => {
+export const getExerciseColumns = (handleDelete: (date: string) => void, handleSave: (record: DataType) => void, setsCount: number) => {
+  const setColumns: (ColumnType<DataType> & { editable?: boolean; dataIndex?: string })[] = Array.from({ length: setsCount }, (_, index) => ({
+    title: `SET ${index + 1}`,
+    dataIndex: index.toString(),
+    key: `set${index + 1}`,
+    width: '100px',
+    editable: true,
+    render: (_: unknown, record: DataType) => record.reps[index],
+  }));
+
   const defaultColumns: (ColumnType<DataType> & { editable?: boolean; dataIndex?: string })[] = [
     {
       title: 'DATE',
@@ -11,30 +20,7 @@ export const getExerciseColumns = (handleDelete: (date: string) => void, handleS
       key: 'date',
       width: '120px',
     },
-    {
-      title: 'SET 1',
-      dataIndex: '0',
-      key: 'set1',
-      width: '100px',
-      editable: true,
-      render: (_, record) => record.reps[0],
-    },
-    {
-      title: 'SET 2',
-      dataIndex: '1',
-      key: 'set2',
-      width: '100px',
-      editable: true,
-      render: (_, record) => record.reps[1],
-    },
-    {
-      title: 'SET 3',
-      dataIndex: '2',
-      key: 'set3',
-      width: '100px',
-      editable: true,
-      render: (_, record) => record.reps[2],
-    },
+    ...setColumns,
     {
       title: 'ACTION',
       key: 'operation',

@@ -5,7 +5,7 @@ interface EditableRowProps {
   index: number;
 }
 
-export const EditableContext = React.createContext<FormInstance<Record<string, number>> | null>(null);
+export const EditableContext = React.createContext<FormInstance<Record<string, string | number>> | null>(null);
 
 export function EditableRow({ index, ...props }: EditableRowProps) {
   const [form] = Form.useForm();

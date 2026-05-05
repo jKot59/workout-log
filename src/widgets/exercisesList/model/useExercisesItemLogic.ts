@@ -7,13 +7,19 @@ import { transformDateToUserFriendly } from '@/shared/lib/helpers/transformDateT
 
 interface UseExercisesItemProps {
   exerciseName: string;
-  initialSets?: IExercise['sets'];
+  initialSets: IExercise['sets'];
 }
 
-export function useExercisesItemLogic({ exerciseName, initialSets }: UseExercisesItemProps) {
+export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExercisesItemProps) {
   const { workout_day: day }: { workout_day: DayOfWeek } = useParams();
 
   const [dataSource, setDataSource] = useState<Required<IExercise>['sets']>([]);
+  const [amountSets, setAmountSets] = useState(() =>
+    initialSets.reduce((acc, curr) => {
+      if (curr.reps.length > acc) acc = curr.reps.length;
+      return acc;
+    }, 0)
+  );
 
   const { db } = useProgramsStore();
 
@@ -41,8 +47,6 @@ export function useExercisesItemLogic({ exerciseName, initialSets }: UseExercise
   const handleDelete = async (key: DataType['date']) => {
     const newData = dataSource?.filter((item) => item.date !== key);
     setDataSource(newData);
-
-    updateExerciseSetReps(newData);
   };
 
   const handleAdd = async () => {
@@ -54,8 +58,18 @@ export function useExercisesItemLogic({ exerciseName, initialSets }: UseExercise
     };
 
     setDataSource([...dataSource, newData]);
+  };
 
-    updateExerciseSetReps([newData]);
+  const handleAddSet = async () => {
+    const newData = structuredClone(dataSource);
+
+    const addedOneMoreSet = newData.map((item) => {
+      item.reps.push(0);
+      return item;
+    });
+
+    setAmountSets((prev) => prev + 1);
+    setDataSource(addedOneMoreSet);
   };
 
   const handleSave = async (updatedRow: DataType) => {
@@ -64,8 +78,6 @@ export function useExercisesItemLogic({ exerciseName, initialSets }: UseExercise
 
     newData.splice(index, 1, updatedRow);
     setDataSource(newData);
-
-    updateExerciseSetReps(newData);
   };
 
   useEffect(() => {
@@ -74,14 +86,20 @@ export function useExercisesItemLogic({ exerciseName, initialSets }: UseExercise
     setDataSource(initialSets);
   }, []);
 
+  useEffect(() => {
+    updateExerciseSetReps(dataSource);
+  }, [dataSource]);
+
   return {
     state: {
       dataSource,
+      amountSets,
     },
     handlers: {
       handleAdd,
       handleSave,
       handleDelete,
+      handleAddSet,
     },
   };
 }

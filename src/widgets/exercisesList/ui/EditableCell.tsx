@@ -30,12 +30,18 @@ export function EditableCell({
   useEffect(() => {
     if (editing) {
       inputRef.current?.focus();
+      // Clear the input if the current value is 0
+      const currentValue = record.reps[+dataIndex];
+      if (currentValue === 0) {
+        form.setFieldsValue({ [dataIndex]: '' });
+      } else {
+        form.setFieldsValue({ [dataIndex]: currentValue });
+      }
     }
   }, [editing]);
 
   const toggleEdit = () => {
     setEditing(!editing);
-    form.setFieldsValue({ [dataIndex]: record.reps[+dataIndex] });
   };
 
   const save = async () => {
@@ -44,8 +50,10 @@ export function EditableCell({
       toggleEdit();
 
       const recordReps = [...record.reps];
+      const newValue = Object.values(values)[0];
 
-      recordReps[+Object.keys(values)[0]] = Object.values(values)[0];
+      // Convert empty string to 0, otherwise keep the value
+      recordReps[+Object.keys(values)[0]] = newValue === '' || newValue === undefined ? 0 : newValue;
 
       handleSave({ ...record, reps: recordReps });
     } catch (errInfo) {
@@ -61,7 +69,7 @@ export function EditableCell({
         <Input ref={inputRef} onPressEnter={save} onBlur={save} placeholder={'0'} />
       </Form.Item>
     ) : (
-      <div className='editable-cell-value-wrap' style={{ paddingInlineEnd: 24 }} onClick={toggleEdit}>
+      <div className='editable-cell-value-wrap' onClick={toggleEdit}>
         {children}
       </div>
     );
