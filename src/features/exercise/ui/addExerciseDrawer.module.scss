@@ -1,0 +1,34 @@
+.drawer_content {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.exercise {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.image_wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--dark-void);
+}
+
+.image {
+  object-fit: contain;
+}
