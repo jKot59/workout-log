@@ -36,6 +36,7 @@ export function ExercisesItem({ name, sets }: IExercise) {
       }
     >
       <Table<DataType>
+        rowHoverable={false}
         components={components}
         rowClassName={() => 'editable-row'}
         bordered

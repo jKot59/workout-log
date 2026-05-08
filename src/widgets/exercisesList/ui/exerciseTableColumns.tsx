@@ -4,16 +4,20 @@ import { ColumnType } from 'antd/es/table';
 import { DataType } from './ExercisesItem';
 
 export const getExerciseColumns = (handleDelete: (date: string) => void, handleSave: (record: DataType) => void, setsCount: number) => {
-  const setColumns: (ColumnType<DataType> & { editable?: boolean; dataIndex?: string })[] = Array.from({ length: setsCount }, (_, index) => ({
-    title: `SET ${index + 1}`,
-    dataIndex: index.toString(),
-    key: `set${index + 1}`,
-    width: '100px',
-    editable: true,
-    render: (_: unknown, record: DataType) => record.reps[index],
-  }));
+  const setColumns: (ColumnType<DataType> & { editable?: boolean; dataIndex?: string; colIndex?: number })[] = Array.from(
+    { length: setsCount },
+    (_, index) => ({
+      title: `SET ${index + 1}`,
+      dataIndex: index.toString(),
+      key: `set${index + 1}`,
+      width: '100px',
+      editable: true,
+      colIndex: index,
+      render: (_: unknown, record: DataType) => record.reps[index],
+    })
+  );
 
-  const defaultColumns: (ColumnType<DataType> & { editable?: boolean; dataIndex?: string })[] = [
+  const defaultColumns: (ColumnType<DataType> & { editable?: boolean; dataIndex?: string; colIndex?: number })[] = [
     {
       title: 'DATE',
       dataIndex: 'date',
@@ -50,6 +54,9 @@ export const getExerciseColumns = (handleDelete: (date: string) => void, handleS
         dataIndex: col.dataIndex,
         title: col.title,
         handleSave,
+        columnIndex: col.colIndex, // Pass column index
+        totalColumns: setsCount, // Pass total number of set columns
+        currentRowKey: record.date, // Pass row key
       }),
     };
   });
