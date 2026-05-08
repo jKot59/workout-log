@@ -4,8 +4,7 @@ import { useState } from 'react';
 
 export function useAddExerciseDrawerLogic(day: DayOfWeek) {
   const [open, setOpen] = useState(false);
-  const { db } = useProgramsStore();
-  const { update } = useProgramsStore();
+  const { db, updateProgramsStore } = useProgramsStore();
 
   const showDrawer = () => setOpen(true);
   const onClose = () => setOpen(false);
@@ -18,7 +17,7 @@ export function useAddExerciseDrawerLogic(day: DayOfWeek) {
     await db?.updateItem({ name: day, exercises: programData?.exercises ?? [] });
     const programs = await db?.getAllItems();
 
-    if (programs) update(programs);
+    if (programs) updateProgramsStore(programs);
 
     onClose();
   };

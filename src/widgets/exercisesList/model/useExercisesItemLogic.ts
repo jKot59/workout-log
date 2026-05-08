@@ -21,7 +21,7 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
     }, 0)
   );
 
-  const { db } = useProgramsStore();
+  const { db, updateProgramsStore } = useProgramsStore();
 
   const updateExerciseSetReps = async (newData: typeof dataSource) => {
     if (!db) throw new Error('Database not initialized');
@@ -42,6 +42,10 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
     }
 
     await db?.updateItem({ name: day, exercises: programData?.exercises ?? [] });
+
+    const programs = await db?.getAllItems();
+
+    if (programs) updateProgramsStore(programs);
   };
 
   const handleDelete = async (key: DataType['date']) => {
@@ -57,7 +61,9 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
       reps: [0, 0, 0],
     };
 
-    setDataSource([...dataSource, newData]);
+    setDataSource((prev) => [...prev, newData]);
+
+    if (dataSource.length === 0) setAmountSets(newData.reps.length);
   };
 
   const handleAddSet = async () => {

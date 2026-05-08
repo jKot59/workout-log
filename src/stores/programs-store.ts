@@ -17,7 +17,7 @@ interface IProgramsStore {
   programs: IProgram[] | null;
   db: IndexedDBManager | null;
   isLoading: boolean;
-  update: (exercise: IProgram[]) => void;
+  updateProgramsStore: (exercise: IProgram[]) => void;
   initializeDB: () => Promise<void>;
 }
 
@@ -25,7 +25,7 @@ export const useProgramsStore = create<IProgramsStore>((set) => ({
   db: null,
   programs: null,
   isLoading: false,
-  update: (programs) => set(() => ({ programs })),
+  updateProgramsStore: (programs) => set(() => ({ programs })),
   initializeDB: async () => {
     set({ isLoading: true });
     const db = new IndexedDBManager('WorkoutLogDatabase', 1, 'exercises');
