@@ -17,6 +17,9 @@
   color: var(--pure-white);
   li {
     cursor: pointer;
+    &::first-letter {
+      text-transform: capitalize;
+    }
   }
 }
 

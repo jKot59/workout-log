@@ -19,13 +19,13 @@ export function useAppSiderLogic() {
   const { db, programs } = useProgramsStore();
 
   const [availableDays, setAvailableDays] = useState<DayOfWeek[]>(() => [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
   ]);
 
   function toggleDaysList() {
