@@ -108,7 +108,7 @@ export class IndexedDBManager<T extends IndexedDBItem = IndexedDBItem> {
     });
   }
 
-  async deleteItem(id: number): Promise<void> {
+  async deleteItemByProgramName(name: DayOfWeek): Promise<void> {
     if (!this.db) {
       throw new Error('Database not initialized. Call openDB() first.');
     }
@@ -116,7 +116,7 @@ export class IndexedDBManager<T extends IndexedDBItem = IndexedDBItem> {
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([this.storeName], 'readwrite');
       const objectStore = transaction.objectStore(this.storeName);
-      const request = objectStore.delete(id);
+      const request = objectStore.delete(name);
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve();

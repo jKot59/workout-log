@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { DataType } from '../ui/ExercisesItem';
 import { transformDateToUserFriendly } from '@/shared/lib/helpers/transformDateToUserFriendly';
+import { useIndexedDBSyncWithZustand } from '@/shared/lib/hooks/useIndexedDBSyncWithZustand';
 
 interface UseExercisesItemProps {
   exerciseName: string;
@@ -11,6 +12,8 @@ interface UseExercisesItemProps {
 }
 
 export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExercisesItemProps) {
+  const { db } = useProgramsStore();
+  const { syncDBWithZustand } = useIndexedDBSyncWithZustand();
   const { workout_day: day }: { workout_day: DayOfWeek } = useParams();
 
   const [dataSource, setDataSource] = useState<Required<IExercise>['sets']>([]);
@@ -20,8 +23,6 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
       return acc;
     }, 0)
   );
-
-  const { db, updateProgramsStore } = useProgramsStore();
 
   const updateExerciseSetReps = async (newData: typeof dataSource) => {
     if (!db) throw new Error('Database not initialized');
@@ -43,9 +44,7 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
 
     await db?.updateItem({ name: day, exercises: programData?.exercises ?? [] });
 
-    const programs = await db?.getAllItems();
-
-    if (programs) updateProgramsStore(programs);
+    syncDBWithZustand();
   };
 
   const handleDelete = async (key: DataType['date']) => {

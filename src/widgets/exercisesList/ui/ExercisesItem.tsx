@@ -40,6 +40,7 @@ export function ExercisesItem({ name, sets }: IExercise) {
         components={components}
         rowClassName={() => 'editable-row'}
         bordered
+        size={'small'}
         dataSource={state.dataSource}
         columns={columns as ColumnTypes}
         rowKey={(record) => record.date}
