@@ -7,9 +7,11 @@ import Link from 'next/link';
 import { ViewTransition } from 'react';
 import { useAppSiderLogic } from '../model/useAppSiderLogic';
 import styles from './appSider.module.scss';
+import { usePathname } from 'next/navigation';
 
 export function AppSider({ aboveMenuSlot }: Readonly<{ aboveMenuSlot: React.ReactNode }>) {
   const { state, handlers } = useAppSiderLogic();
+  const pathname = usePathname();
 
   return (
     <Sider collapsible collapsed={state.collapsed} onCollapse={(value) => handlers.setCollapsed(value)}>
@@ -18,14 +20,15 @@ export function AppSider({ aboveMenuSlot }: Readonly<{ aboveMenuSlot: React.Reac
       {state.menuItems.length ? (
         <Menu
           className={styles.menu}
+          selectedKeys={[pathname]}
           theme='dark'
           mode='inline'
           items={state.menuItems.map((day) =>
             handlers.createMenuItem(
-              <Link href={day.toLowerCase()} className={styles.day}>
+              <Link href={day} className={styles.day}>
                 {day}
               </Link>,
-              day
+              '/' + day
             )
           )}
         />

@@ -1,3 +1,5 @@
+![App screenshot](./public/workout-log-logo.png)
+
 ## Workout Log
 
 Workout Log is a Next.js pet project that helps you create custom training plans and track reps, sets, and progress. Plan your workouts ahead, log what you've done, and see how you improve over time.

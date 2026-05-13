@@ -34,6 +34,9 @@
 
 .menu {
   margin-top: 6px;
+  li[class*='-selected'] {
+    background: var(--deep-impact-purple);
+  }
 }
 
 .day {
