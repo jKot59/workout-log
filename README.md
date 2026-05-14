@@ -6,9 +6,9 @@ Workout Log is a Next.js pet project that helps you create custom training plans
 
 ## Tech Stack
 
-IndexedDB – For client-side data persistence (no backend required).
-Zustand – Lightweight and performant state management.
-Next.js – Used for learning purposes (though plain React would have sufficed).
+IndexedDB – For client-side data persistence (no backend required).<br>
+Zustand – Lightweight and performant state management.<br>
+Next.js – Used for learning purposes (though plain React would have sufficed).<br>
 
 ## Getting Started
 
