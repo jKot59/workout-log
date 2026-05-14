@@ -1,4 +1,4 @@
-![App screenshot](./public/workout-log-logo.png)
+<img src="./public/workout-log-logo.png" alt="Demo" width="200" />
 
 ## Workout Log
 
