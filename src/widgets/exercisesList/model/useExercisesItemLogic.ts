@@ -27,7 +27,7 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
   const updateExerciseSetReps = async (newData: typeof dataSource) => {
     if (!db) throw new Error('Database not initialized');
 
-    const programData = await db.getItemByProgramName(day);
+    const programData = await db.getProgramByName(day);
 
     if (!programData) throw new Error(`Program for ${day} not found`);
 

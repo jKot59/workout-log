@@ -37,7 +37,7 @@ export function useAppSiderLogic() {
     setAvailableDays((prev) => prev.filter((item) => item.toLowerCase() !== day.toLowerCase()));
     toggleDaysList();
 
-    await db?.addItem({ name: day.toLowerCase(), exercises: [] });
+    await db?.addItem({ name: day.toLowerCase() as DayOfWeek, exercises: [] });
   }
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { IndexedDBManager } from '@/shared/lib/indexedDB/IndexedDBManager';
+import { ProgramDatabase } from '@/shared/lib/indexedDB/ProgramDatabase';
 import { DayOfWeek } from '@/widgets/appSider';
 import { DataType } from '@/widgets/exercisesList';
 import { create } from 'zustand';
@@ -15,7 +15,7 @@ interface IProgram {
 
 interface IProgramsStore {
   programs: IProgram[] | null;
-  db: IndexedDBManager | null;
+  db: ProgramDatabase | null;
   isLoading: boolean;
   updateProgramsStore: (exercise: IProgram[]) => void;
   initializeDB: () => Promise<void>;
@@ -28,7 +28,7 @@ export const useProgramsStore = create<IProgramsStore>((set) => ({
   updateProgramsStore: (programs) => set(() => ({ programs })),
   initializeDB: async () => {
     set({ isLoading: true });
-    const db = new IndexedDBManager('WorkoutLogDatabase', 1, 'exercises');
+    const db = new ProgramDatabase();
     await db.openDB();
     const programs = await db.getAllItems();
     set({ db, programs, isLoading: false });

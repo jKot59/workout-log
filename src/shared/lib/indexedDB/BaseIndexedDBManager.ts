@@ -1,17 +1,12 @@
-import { IExercise } from '@/stores/programs-store';
-import { DayOfWeek } from '@/widgets/appSider';
-
-export interface IndexedDBItem {
-  name: DayOfWeek;
-  exercises: IExercise[];
-  [key: string]: unknown;
+export interface BaseItem {
+  id?: string | number;
 }
 
-export class IndexedDBManager<T extends IndexedDBItem = IndexedDBItem> {
-  private dbName: string;
-  private version: number;
-  private storeName: string;
-  private db: IDBDatabase | null;
+export class BaseIndexedDBManager<T extends BaseItem = BaseItem> {
+  protected dbName: string;
+  protected version: number;
+  protected storeName: string;
+  protected db: IDBDatabase | null;
 
   constructor(dbName: string, version: number, storeName: string) {
     this.dbName = dbName;
@@ -34,11 +29,10 @@ export class IndexedDBManager<T extends IndexedDBItem = IndexedDBItem> {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains(this.storeName)) {
           const objectStore = db.createObjectStore(this.storeName, {
-            keyPath: 'name',
-            // autoIncrement: true,
+            keyPath: 'id',
+            autoIncrement: true,
           });
-          objectStore.createIndex('name', 'name', { unique: true });
-          objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+          objectStore.createIndex('id', 'id', { unique: true });
         }
       };
     });
@@ -74,7 +68,7 @@ export class IndexedDBManager<T extends IndexedDBItem = IndexedDBItem> {
     });
   }
 
-  async getItemByProgramName(name: DayOfWeek): Promise<T | undefined> {
+  async getItemById(id: string | number): Promise<T | undefined> {
     if (!this.db) {
       throw new Error('Database not initialized. Call openDB() first.');
     }
@@ -82,7 +76,7 @@ export class IndexedDBManager<T extends IndexedDBItem = IndexedDBItem> {
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([this.storeName], 'readonly');
       const objectStore = transaction.objectStore(this.storeName);
-      const request = objectStore.get(name);
+      const request = objectStore.get(id);
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result as T | undefined);
@@ -92,10 +86,6 @@ export class IndexedDBManager<T extends IndexedDBItem = IndexedDBItem> {
   async updateItem(item: T): Promise<number> {
     if (!this.db) {
       throw new Error('Database not initialized. Call openDB() first.');
-    }
-
-    if (!item.name) {
-      throw new Error('Item must have an id property to update');
     }
 
     return new Promise((resolve, reject) => {
@@ -108,7 +98,7 @@ export class IndexedDBManager<T extends IndexedDBItem = IndexedDBItem> {
     });
   }
 
-  async deleteItemByProgramName(name: DayOfWeek): Promise<void> {
+  async deleteItem(id: string | number): Promise<void> {
     if (!this.db) {
       throw new Error('Database not initialized. Call openDB() first.');
     }
@@ -116,7 +106,7 @@ export class IndexedDBManager<T extends IndexedDBItem = IndexedDBItem> {
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([this.storeName], 'readwrite');
       const objectStore = transaction.objectStore(this.storeName);
-      const request = objectStore.delete(name);
+      const request = objectStore.delete(id);
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve();

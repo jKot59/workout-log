@@ -18,7 +18,7 @@ export function DeleteWorkoutDayBtn({ day, ...restProps }: DeleteWorkoutDayBtnPr
   const { syncDBWithZustand } = useIndexedDBSyncWithZustand();
 
   const onDelete = async () => {
-    db?.deleteItemByProgramName(day);
+    db?.deleteProgramByName(day);
 
     router.push('/');
     syncDBWithZustand();
