@@ -1,22 +1,13 @@
-import { startTransition, useEffect, useState } from 'react';
-import { DayOfWeek, MenuItem } from './types';
+import { startTransition, useLayoutEffect, useState } from 'react';
+import { DayOfWeek } from './types';
 import { arraysSymmetricDifference } from '@/shared/lib/helpers/arraysSymmetricDifference';
 import { useProgramsStore } from '@/stores/programs-store';
-
-function createMenuItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem;
-}
 
 export function useAppSiderLogic() {
   const [collapsed, setCollapsed] = useState(false);
   const [menuItems, setMenuItems] = useState<DayOfWeek[]>(() => []);
   const [isAvailableDaysListShown, setIsAvailableDaysListShown] = useState(false);
-  const { db, programs } = useProgramsStore();
+  const { db, programs, isLoading: isMenuItemsLoading } = useProgramsStore();
 
   const [availableDays, setAvailableDays] = useState<DayOfWeek[]>(() => [
     'monday',
@@ -40,7 +31,7 @@ export function useAppSiderLogic() {
     await db?.addItem({ name: day.toLowerCase() as DayOfWeek, exercises: [] });
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (programs === null) return;
 
     const loadProducts = () => {
@@ -57,13 +48,15 @@ export function useAppSiderLogic() {
       menuItems,
       collapsed,
       availableDays,
+      isMenuItemsLoading,
       isAvailableDaysListShown,
     },
     handlers: {
       setCollapsed,
       toggleDaysList,
       handleSelectDay,
-      createMenuItem,
     },
   };
 }
+
+export type TuseAppSiderLogic = ReturnType<typeof useAppSiderLogic>;

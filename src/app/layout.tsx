@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import styles from './layout.module.scss';
 import { IndexedDBInitializer } from './providers/IndexedDBInitializer';
+import { AntdRegistry } from '@ant-design/nextjs-registry';
 
 export const metadata: Metadata = {
   title: 'Workout log',
@@ -16,15 +17,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang='en'>
       <body>
-        <IndexedDBInitializer />
-        <Layout className={styles.layout}>
-          <AppSider aboveMenuSlot={<Logo />} />
+        <AntdRegistry>
+          <IndexedDBInitializer />
+          <Layout className={styles.layout}>
+            <AppSider aboveMenuSlot={<Logo />} />
 
-          <Layout>
-            <MainHeader />
-            {children}
+            <Layout>
+              <MainHeader />
+              {children}
+            </Layout>
           </Layout>
-        </Layout>
+        </AntdRegistry>
       </body>
     </html>
   );

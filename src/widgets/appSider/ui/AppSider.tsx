@@ -1,40 +1,20 @@
 'use client';
 
 import { Button } from '@/shared/ui/button/Button';
-import { Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
-import Link from 'next/link';
 import { ViewTransition } from 'react';
 import { useAppSiderLogic } from '../model/useAppSiderLogic';
 import styles from './appSider.module.scss';
-import { usePathname } from 'next/navigation';
+import { SiderMenu } from './SiderMenu/SiderMenu';
 
 export function AppSider({ aboveMenuSlot }: Readonly<{ aboveMenuSlot: React.ReactNode }>) {
   const { state, handlers } = useAppSiderLogic();
-  const pathname = usePathname();
 
   return (
     <Sider collapsible collapsed={state.collapsed} onCollapse={(value) => handlers.setCollapsed(value)}>
       {aboveMenuSlot}
 
-      {state.menuItems.length ? (
-        <Menu
-          className={styles.menu}
-          selectedKeys={[pathname]}
-          theme='dark'
-          mode='inline'
-          items={state.menuItems.map((day) =>
-            handlers.createMenuItem(
-              <Link href={day} className={styles.day}>
-                {day}
-              </Link>,
-              '/' + day
-            )
-          )}
-        />
-      ) : (
-        <div className={styles.empty_day}>No trainings</div>
-      )}
+      <SiderMenu menuItems={state.menuItems} isMenuItemsLoading={state.isMenuItemsLoading} />
 
       <div className={styles.days_list}>
         {state.availableDays.length && (

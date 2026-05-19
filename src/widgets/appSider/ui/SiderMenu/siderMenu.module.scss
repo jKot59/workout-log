@@ -1,0 +1,32 @@
+.menu {
+  margin-top: 6px;
+  li[class*='-selected'] {
+    background: var(--deep-impact-purple);
+  }
+}
+
+.empty_day {
+  margin: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  color: var(--pure-white);
+}
+
+.day {
+  display: block;
+  &:first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.skeleton {
+  margin-top: 6px;
+  padding: 4px;
+
+  &_button {
+    height: 40px;
+    background-color: #fff;
+  }
+}
