@@ -40,7 +40,7 @@ export function SiderMenu({ menuItems, isMenuItemsLoading }: ISiderMenuProps) {
       mode='inline'
       items={menuItems.map((day) =>
         createMenuItem(
-          <Link href={day} className={styles.day}>
+          <Link data-testid='training day' href={day} className={styles.day}>
             {day}
           </Link>,
           '/' + day

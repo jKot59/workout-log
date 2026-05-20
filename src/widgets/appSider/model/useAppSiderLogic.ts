@@ -3,21 +3,15 @@ import { DayOfWeek } from './types';
 import { arraysSymmetricDifference } from '@/shared/lib/helpers/arraysSymmetricDifference';
 import { useProgramsStore } from '@/stores/programs-store';
 
+const initialDays: DayOfWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
 export function useAppSiderLogic() {
   const [collapsed, setCollapsed] = useState(false);
   const [menuItems, setMenuItems] = useState<DayOfWeek[]>(() => []);
   const [isAvailableDaysListShown, setIsAvailableDaysListShown] = useState(false);
   const { db, programs, isLoading: isMenuItemsLoading } = useProgramsStore();
 
-  const [availableDays, setAvailableDays] = useState<DayOfWeek[]>(() => [
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-    'sunday',
-  ]);
+  const [availableDays, setAvailableDays] = useState<DayOfWeek[]>(() => initialDays);
 
   function toggleDaysList() {
     startTransition(() => setIsAvailableDaysListShown((prev) => !prev));
@@ -33,11 +27,10 @@ export function useAppSiderLogic() {
 
   useLayoutEffect(() => {
     if (programs === null) return;
-
     const loadProducts = () => {
       const takeOnlyDays = programs.map((program) => program.name);
       setMenuItems(takeOnlyDays);
-      setAvailableDays((prev) => arraysSymmetricDifference(prev, takeOnlyDays) as DayOfWeek[]);
+      setAvailableDays(() => arraysSymmetricDifference(initialDays, takeOnlyDays) as DayOfWeek[]);
     };
 
     loadProducts();

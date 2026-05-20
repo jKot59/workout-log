@@ -17,7 +17,7 @@ export default async function TrainingDayPage({ params }: PageProps) {
     <section className={styles.page}>
       <Flex justify={'center'} align={'center'}>
         <h1>{workout_day}</h1>
-        <DeleteWorkoutDayBtn day={workout_day} className={styles.delete_btn} />
+        <DeleteWorkoutDayBtn data-testid='delete day btn' day={workout_day} className={styles.delete_btn} />
       </Flex>
 
       <AddExerciseDrawer day={workout_day} />

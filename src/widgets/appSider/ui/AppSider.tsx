@@ -25,9 +25,9 @@ export function AppSider({ aboveMenuSlot }: Readonly<{ aboveMenuSlot: React.Reac
 
         {state.isAvailableDaysListShown && (
           <ViewTransition default={'none'} enter='slide-up' exit='slide-down'>
-            <ul className={styles.list}>
+            <ul data-testid='days list' className={styles.list}>
               {state.availableDays.map((day) => (
-                <li key={day} onClick={() => handlers.handleSelectDay(day)}>
+                <li data-testid='day item' key={day} onClick={() => handlers.handleSelectDay(day)}>
                   {day}
                 </li>
               ))}
