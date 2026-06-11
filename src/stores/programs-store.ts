@@ -24,7 +24,7 @@ interface IProgramsStore {
 export const useProgramsStore = create<IProgramsStore>((set) => ({
   db: null,
   programs: null,
-  isLoading: false,
+  isLoading: true,
   updateProgramsStore: (programs) => set(() => ({ programs })),
   initializeDB: async () => {
     set({ isLoading: true });

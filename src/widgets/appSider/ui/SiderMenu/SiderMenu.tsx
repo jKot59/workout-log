@@ -24,10 +24,10 @@ export function SiderMenu({ menuItems, isMenuItemsLoading }: ISiderMenuProps) {
 
   if (isMenuItemsLoading)
     return (
-      <Flex gap={'8px'} className={styles.skeleton} vertical>
+      <div className={styles.skeleton}>
         <Skeleton.Button active block className={styles.skeleton_button} />
         <Skeleton.Button active block className={styles.skeleton_button} />
-      </Flex>
+      </div>
     );
 
   if (!menuItems.length) return <div className={styles.empty_day}>No trainings</div>;

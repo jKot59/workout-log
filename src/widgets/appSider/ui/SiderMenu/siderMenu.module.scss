@@ -24,9 +24,16 @@
 .skeleton {
   margin-top: 6px;
   padding: 4px;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
 
   &_button {
     height: 40px;
     background-color: #fff;
+    border-radius: 6px;
+    span {
+      height: 100% !important;
+    }
   }
 }
