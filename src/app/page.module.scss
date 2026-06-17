@@ -9,6 +9,16 @@
   justify-content: center;
   font-family: var(--font-geist-sans);
   background-color: var(--background);
+
+  h1 {
+    font-size: 3rem;
+    background-color: #56565661;
+    color: transparent;
+    text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.5);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+  }
 }
 
 @media (max-width: 600px) {

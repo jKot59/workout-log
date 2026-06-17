@@ -1,11 +1,13 @@
-import styles from './page.module.css';
+import styles from './page.module.scss';
 
 //TODO make it work in offline(manifest)
 
 export default function Home() {
   return (
     <div className={styles.page}>
-      <main className={styles.main}></main>
+      <main className={styles.main}>
+        <h1>Workout log</h1>
+      </main>
     </div>
   );
 }
