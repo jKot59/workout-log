@@ -74,8 +74,15 @@ export function useEditableCellLogic({
       const values = await form.validateFields();
       const recordReps = [...record.reps];
       const newValue = Object.values(values)[0];
+      const isValueChanged = newValue === recordReps[+Object.keys(values)[0]];
 
-      recordReps[+Object.keys(values)[0]] = newValue === '' || newValue === undefined ? 0 : newValue;
+      if (isValueChanged) {
+        setEditing(false);
+
+        return;
+      }
+
+      recordReps[+Object.keys(values)[0]] = newValue === '' || newValue === undefined ? '0' : newValue;
 
       handleSave({ ...record, reps: recordReps });
       moveToNextCell();
