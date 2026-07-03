@@ -19,6 +19,9 @@ jobs:
       - name: Lint
         run: yarn lint
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
       - name: Start application
         run: |
           yarn build  # If you need to build first
