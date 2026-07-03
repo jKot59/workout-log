@@ -31,12 +31,6 @@ export function useEditableCellLogic({
   useEffect(() => {
     if (editing) {
       inputRef.current?.focus();
-      const currentValue = record.reps[+dataIndex];
-      if (currentValue === 0) {
-        form.setFieldsValue({ [dataIndex]: '' });
-      } else {
-        form.setFieldsValue({ [dataIndex]: currentValue });
-      }
     }
   }, [editing]);
 
@@ -82,7 +76,7 @@ export function useEditableCellLogic({
         return;
       }
 
-      recordReps[+Object.keys(values)[0]] = newValue === '' || newValue === undefined ? '0' : newValue;
+      recordReps[+Object.keys(values)[0]] = newValue === '' || newValue === undefined ? '0' : String(newValue);
 
       handleSave({ ...record, reps: recordReps });
       moveToNextCell();

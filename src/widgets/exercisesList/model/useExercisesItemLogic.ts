@@ -57,7 +57,7 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
 
     const newData: DataType = {
       date: date,
-      reps: [0, 0, 0],
+      reps: [, ,],
     };
 
     setDataSource((prev) => [...prev, newData]);
@@ -69,7 +69,7 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
     const newData = structuredClone(dataSource);
 
     const addedOneMoreSet = newData.map((item) => {
-      item.reps.push(0);
+      item.reps.push();
       return item;
     });
 

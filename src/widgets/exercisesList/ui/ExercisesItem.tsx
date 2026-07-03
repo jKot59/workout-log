@@ -8,7 +8,7 @@ import { getExerciseColumns } from './exerciseTableColumns';
 
 export interface DataType {
   date: string;
-  reps: (string | number)[];
+  reps: (string | undefined)[];
 }
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
