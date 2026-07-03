@@ -57,7 +57,7 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
 
     const newData: DataType = {
       date: date,
-      reps: [, ,],
+      reps: [, , ,],
     };
 
     setDataSource((prev) => [...prev, newData]);
