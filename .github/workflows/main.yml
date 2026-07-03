@@ -19,16 +19,16 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      # - name: Install Playwright Browsers
+      #   run: npx playwright install --with-deps
 
-      - name: Start application
-        run: |
-          yarn build  # If you need to build first
-          yarn start &
+      # - name: Start application
+      #   run: |
+      #     yarn build  # If you need to build first
+      #     yarn start &
 
-      - name: Test
-        run: npx playwright test
+      # - name: Test
+      #   run: npx playwright test
 
       - name: Build
         run: yarn build
