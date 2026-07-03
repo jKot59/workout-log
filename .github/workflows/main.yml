@@ -19,8 +19,13 @@ jobs:
       - name: Lint
         run: yarn lint
 
+      - name: Start application
+        run: |
+          yarn build  # If you need to build first
+          yarn start &
+
       - name: Test
-        run: yarn test --passWithNoTests
+        run: npx playwright test
 
       - name: Build
         run: yarn build
