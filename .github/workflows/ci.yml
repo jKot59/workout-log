@@ -26,15 +26,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm' # Speeds up installs
+          cache: 'yarn' # Speeds up installs
+          cache-dependency-path: yarn.lock # Tells GitHub where your lockfile is
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm ci # 'ci' is faster and stricter than 'install'
+        run: yarn install --frozen-lockfile # is faster and stricter than 'install'
 
       # Step 4: Run Linting
       - name: Run ESLint
-        run: npm run lint --
+        run: yarn lint --
 
       # - name: Install Playwright Browsers
       #   run: npx playwright install --with-deps
