@@ -10,8 +10,8 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  lint-and-test:
-    name: Lint & Test
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
 
     steps:
@@ -37,21 +37,31 @@ jobs:
       - name: Run ESLint
         run: yarn lint --
 
-      # - name: Install Playwright Browsers
-      #   run: npx playwright install --with-deps
+  test:
+    name: Test
+    runs-on: ubuntu-latest
 
-      # - name: Start application
-      #   run: |
-      #     yarn build  # If you need to build first
-      #     yarn start &
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for better SonarQube analysis
 
-      # - name: Test
-      #   run: npx playwright test
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
+      - name: Start application
+        run: |
+          yarn build  # If you need to build first
+          yarn start &
+
+      - name: Test
+        run: npx playwright test
   build:
     name: Build Docker Image
     runs-on: ubuntu-latest
-    needs: lint-and-test # Only runs if lint-and-test passes
+    needs: ['lint', 'test'] # Only runs if lint-and-test passes
 
     # Only run on specific branches to save resources
     if: |
