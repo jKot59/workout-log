@@ -1,22 +1,23 @@
 import { Button } from '@/shared/ui/button/Button';
-import { IExercise } from '@/stores/programs-store';
+import { IExercise, OneSet } from '@/stores/programs-store';
 import { Card, Flex, Table, TableProps } from 'antd';
 import { useExercisesItemLogic } from '../model/useExercisesItemLogic';
 import { EditableCell } from './EditableCell';
 import { EditableRow } from './EditableRow';
 import { getExerciseColumns } from './exerciseTableColumns';
 
-export interface DataType {
-  date: string;
-  reps: (string | undefined)[];
-}
-
-type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
+type ColumnTypes = Exclude<TableProps<OneSet>['columns'], undefined>;
 
 export function ExercisesItem({ name, sets }: IExercise) {
   const { state, handlers } = useExercisesItemLogic({ exerciseName: name, initialSets: sets });
 
-  const columns = getExerciseColumns(handlers.handleDelete, handlers.handleSave, state.amountSets);
+  const columns = getExerciseColumns(
+    handlers.handleRemoveEquipment,
+    handlers.handleAddEquipment,
+    handlers.handleDelete,
+    handlers.handleSave,
+    state.amountSets
+  );
 
   const components = {
     body: {
@@ -35,7 +36,7 @@ export function ExercisesItem({ name, sets }: IExercise) {
         </Flex>
       }
     >
-      <Table<DataType>
+      <Table<OneSet>
         rowHoverable={false}
         components={components}
         rowClassName={() => 'editable-row'}

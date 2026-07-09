@@ -1,8 +1,7 @@
-import { IExercise, useProgramsStore } from '@/stores/programs-store';
+import { IExercise, OneSet, useProgramsStore } from '@/stores/programs-store';
 import { DayOfWeek } from '@/widgets/appSider';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { DataType } from '../ui/ExercisesItem';
 import { transformDateToUserFriendly } from '@/shared/lib/helpers/transformDateToUserFriendly';
 import { useIndexedDBSyncWithZustand } from '@/shared/lib/hooks/useIndexedDBSyncWithZustand';
 
@@ -47,7 +46,7 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
     syncDBWithZustand();
   };
 
-  const handleDelete = async (key: DataType['date']) => {
+  const handleDelete = async (key: OneSet['date']) => {
     const newData = dataSource?.filter((item) => item.date !== key);
     setDataSource(newData);
   };
@@ -55,9 +54,10 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
   const handleAdd = async () => {
     const date = transformDateToUserFriendly(new Date().toString());
 
-    const newData: DataType = {
+    const newData: OneSet = {
       date: date,
       reps: [, , ,],
+      equipments: [],
     };
 
     setDataSource((prev) => [...prev, newData]);
@@ -77,7 +77,35 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
     setDataSource(addedOneMoreSet);
   };
 
-  const handleSave = async (updatedRow: DataType) => {
+  const handleAddEquipment = async (date: OneSet['date'], equipmentName: OneSet['equipments'][0]['name']) => {
+    const newData = structuredClone(dataSource);
+
+    const withNewEquipment = newData.map((item) => {
+      if (item.date === date) {
+        item.equipments.push({ name: equipmentName });
+      }
+
+      return item;
+    });
+
+    setDataSource(withNewEquipment);
+  };
+
+  const handleRemoveEquipment = async (date: OneSet['date'], equipmentName: OneSet['equipments'][0]['name']) => {
+    const newData = structuredClone(dataSource);
+
+    const withoutEquipment = newData.map((item) => {
+      if (item.date === date) {
+        item.equipments = item.equipments.filter((equipment) => equipment.name !== equipmentName);
+      }
+
+      return item;
+    });
+
+    setDataSource(withoutEquipment);
+  };
+
+  const handleSave = async (updatedRow: OneSet) => {
     const newData = [...dataSource];
     const index = newData.findIndex((item) => updatedRow.date === item.date);
 
@@ -105,6 +133,8 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
       handleSave,
       handleDelete,
       handleAddSet,
+      handleAddEquipment,
+      handleRemoveEquipment,
     },
   };
 }
