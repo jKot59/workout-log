@@ -1,3 +1,1 @@
-import { AddExerciseDrawer } from './ui/AddExerciseDrawer/AddExerciseDrawer';
-
-export { AddExerciseDrawer };
+export { AddExerciseDrawer } from './ui/AddExerciseDrawer/AddExerciseDrawer';

@@ -1,3 +1,1 @@
-import { ExercisesList } from './ui/ExercisesList';
-
-export { ExercisesList };
+export { ExercisesList } from './ui/ExercisesList';

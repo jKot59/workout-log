@@ -1,3 +1,1 @@
-import { MainHeader } from './ui/MainHeader';
-
-export { MainHeader };
+export { MainHeader } from './ui/MainHeader';

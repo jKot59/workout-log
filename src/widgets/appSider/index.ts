@@ -1,4 +1,5 @@
-import { AppSider } from './ui/AppSider';
-import { type DayOfWeek } from './model/types';
+// Main component
+export { AppSider } from './ui/AppSider';
 
-export { AppSider, DayOfWeek };
+// Types
+export type { DayOfWeek } from './model/types';
