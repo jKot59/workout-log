@@ -2,14 +2,14 @@
 
 import { useContext, useEffect, useRef, useState } from 'react';
 import { InputRef } from 'antd';
-import { DataType } from '../ui/ExercisesItem';
 import { EditableContext } from '../ui/EditableRow';
+import { OneSet } from '@/shared/types/workout';
 
 interface UseEditableCellLogicProps {
   editable: boolean;
-  dataIndex: keyof DataType | string;
-  record: DataType;
-  handleSave: (record: DataType) => void;
+  dataIndex: keyof OneSet | string;
+  record: OneSet;
+  handleSave: (record: OneSet) => void;
   columnIndex?: number;
   totalColumns?: number;
   currentRowKey?: string;

@@ -2,15 +2,15 @@
 
 import React from 'react';
 import { Form, Input } from 'antd';
-import { DataType } from './ExercisesItem';
 import { useEditableCellLogic } from '../model/useEditableCellLogic';
+import { OneSet } from '@/shared/types/workout';
 
 interface EditableCellProps {
   title: React.ReactNode;
   editable: boolean;
-  dataIndex: keyof DataType | string;
-  record: DataType;
-  handleSave: (record: DataType) => void;
+  dataIndex: keyof OneSet | string;
+  record: OneSet;
+  handleSave: (record: OneSet) => void;
   columnIndex?: number;
   totalColumns?: number;
   currentRowKey?: string;

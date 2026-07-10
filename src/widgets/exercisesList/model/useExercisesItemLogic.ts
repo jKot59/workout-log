@@ -1,4 +1,5 @@
-import { IExercise, OneSet, useProgramsStore } from '@/stores/programs-store';
+import { IExercise, OneSet } from '@/shared/types/workout';
+import { useProgramsStore } from '@/stores/programs-store';
 import { DayOfWeek } from '@/widgets/appSider';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';

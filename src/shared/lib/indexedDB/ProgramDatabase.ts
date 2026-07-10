@@ -1,6 +1,6 @@
 import { DayOfWeek } from '@/widgets/appSider';
 import { BaseIndexedDBManager, BaseItem } from './BaseIndexedDBManager';
-import { IExercise } from '@/stores/programs-store';
+import { IExercise } from '@/shared/types/workout';
 
 export interface ProgramItem extends BaseItem {
   id?: number;

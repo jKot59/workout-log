@@ -1,7 +1,7 @@
 import { Button, Dropdown, Flex, MenuProps, Popconfirm, Tag } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { ColumnType } from 'antd/es/table';
-import { OneSet } from '@/stores/programs-store';
+import { OneSet } from '@/shared/types/workout';
 
 const availableEquipment: NonNullable<OneSet>['equipments'] = [{ name: 'band' }, { name: 'weigh' }];
 

@@ -1,5 +1,5 @@
 import { Button } from '@/shared/ui/button/Button';
-import { IExercise, OneSet } from '@/stores/programs-store';
+import { IExercise, OneSet } from '@/shared/types/workout';
 import { Card, Flex, Table, TableProps } from 'antd';
 import { useExercisesItemLogic } from '../model/useExercisesItemLogic';
 import { EditableCell } from './EditableCell';

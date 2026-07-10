@@ -1,23 +1,6 @@
 import { ProgramDatabase } from '@/shared/lib/indexedDB/ProgramDatabase';
-import { DayOfWeek } from '@/widgets/appSider';
+import { IProgram } from '@/shared/types/workout';
 import { create } from 'zustand';
-
-export interface OneSet {
-  date: string;
-  reps: (string | undefined)[];
-  equipments: {
-    name: string;
-  }[];
-}
-export interface IExercise {
-  name: string;
-  sets?: OneSet[];
-}
-
-interface IProgram {
-  name: DayOfWeek;
-  exercises: IExercise[];
-}
 
 interface IProgramsStore {
   programs: IProgram[] | null;
