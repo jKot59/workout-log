@@ -3,7 +3,7 @@ import { DayOfWeek } from '@/widgets/appSider';
 export interface OneSet {
   date: string;
   reps: (string | undefined)[];
-  equipments: {
+  equipmentList: {
     name: string;
   }[];
 }
