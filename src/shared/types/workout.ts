@@ -4,7 +4,7 @@ export interface OneSet {
   date: string;
   reps: (string | undefined)[];
   equipmentList: {
-    name: string;
+    id: string;
   }[];
 }
 

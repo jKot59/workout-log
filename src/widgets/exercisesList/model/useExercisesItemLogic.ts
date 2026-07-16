@@ -78,26 +78,27 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
     setDataSource(addedOneMoreSet);
   };
 
-  const handleAddEquipment = async (date: OneSet['date'], equipmentName: OneSet['equipmentList'][0]['name']) => {
-    const newData = structuredClone(dataSource);
+  const handleAddEquipment = async (date: OneSet['date'], equipment: OneSet['equipmentList'][0]) => {
+    const clonedDataSource = structuredClone(dataSource);
 
-    const withNewEquipment = newData.map((item) => {
-      if (item.date === date) {
-        item.equipmentList.push({ name: equipmentName });
-      }
+    const withAddedEquipment = clonedDataSource.map((item) => {
+      if (item.date !== date) return item;
 
-      return item;
+      return {
+        ...item,
+        equipmentList: [...(item.equipmentList ?? []), equipment],
+      };
     });
 
-    setDataSource(withNewEquipment);
+    setDataSource(withAddedEquipment);
   };
 
-  const handleRemoveEquipment = async (date: OneSet['date'], equipmentName: OneSet['equipmentList'][0]['name']) => {
+  const handleRemoveEquipment = async (date: OneSet['date'], equipmentId: OneSet['equipmentList'][0]['id']) => {
     const newData = structuredClone(dataSource);
 
     const withoutEquipment = newData.map((item) => {
       if (item.date === date) {
-        item.equipmentList = item.equipmentList.filter((equipment) => equipment.name !== equipmentName);
+        item.equipmentList = item.equipmentList.filter((equipment) => equipment.id !== equipmentId);
       }
 
       return item;

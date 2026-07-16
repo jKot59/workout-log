@@ -3,11 +3,19 @@ import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { ColumnType } from 'antd/es/table';
 import { OneSet } from '@/shared/types/workout';
 
-const availableEquipment: NonNullable<OneSet>['equipmentList'] = [{ name: 'band' }, { name: 'weigh' }];
+interface IEquipment {
+  id: string;
+  name: string;
+}
+
+const availableEquipment: IEquipment[] = [
+  { id: '1', name: 'band' },
+  { id: '2', name: 'weight' },
+];
 
 export const getExerciseColumns = (
-  handleRemoveEquipment: (date: OneSet['date'], equipmentName: OneSet['equipmentList'][0]['name']) => void,
-  handleAddEquipment: (date: OneSet['date'], equipmentName: OneSet['equipmentList'][0]['name']) => void,
+  handleRemoveEquipment: (date: OneSet['date'], equipmentId: OneSet['equipmentList'][0]['id']) => void,
+  handleAddEquipment: (date: OneSet['date'], equipmentId: OneSet['equipmentList'][0]) => void,
   handleDelete: (date: string) => void,
   handleSave: (record: OneSet) => void,
   setsCount: number
@@ -27,13 +35,15 @@ export const getExerciseColumns = (
 
   // Equipment menu items
   const getEquipmentMenuItems = (record: OneSet): MenuProps['items'] => {
-    return availableEquipment
-      .filter((curr) => !record.equipmentList.some((equipment) => equipment.name === curr.name))
-      .map((curr) => ({
-        key: curr.name,
-        label: curr.name,
-        onClick: () => handleAddEquipment(record.date, curr.name),
-      }));
+    const onlyUnusedEquipment = availableEquipment.filter(
+      (curr) => record.equipmentList?.some((equipment) => equipment.id !== curr.id) || true
+    );
+
+    return onlyUnusedEquipment.map((curr) => ({
+      key: curr.id,
+      label: curr.name,
+      onClick: () => handleAddEquipment(record.date, curr),
+    }));
   };
 
   const defaultColumns: (ColumnType<OneSet> & { editable?: boolean; dataIndex?: string; colIndex?: number })[] = [
@@ -54,8 +64,8 @@ export const getExerciseColumns = (
             {record.equipmentList && record.equipmentList.length > 0
               ? record.equipmentList.map((equipment) => {
                   return (
-                    <Tag key={equipment.name} closable={true} onClose={() => handleRemoveEquipment(record.date, equipment.name)}>
-                      {equipment.name}
+                    <Tag key={equipment.id} closable={true} onClose={() => handleRemoveEquipment(record.date, equipment.id)}>
+                      {availableEquipment.find((item) => item.id === equipment.id)?.name ?? 'No name'}
                     </Tag>
                   );
                 })
@@ -63,7 +73,7 @@ export const getExerciseColumns = (
           </Flex>
 
           <Dropdown menu={{ items: getEquipmentMenuItems(record) }} trigger={['click']} disabled={availableEquipment.length === 0}>
-            {availableEquipment.length !== record.equipmentList.length && (
+            {availableEquipment.length !== record.equipmentList?.length && (
               <Button type='text' size='small' icon={<PlusOutlined />} disabled={availableEquipment.length === 0} />
             )}
           </Dropdown>
