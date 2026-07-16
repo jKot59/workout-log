@@ -1,0 +1,21 @@
+services:
+  nextjs:
+    image: jkot599/workout-log-app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    ports:
+      - '3000:3000'
+
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+    environment:
+      NODE_ENV: development
+      WATCHPACK_POLLING: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+
+    stdin_open: true
+    tty: true

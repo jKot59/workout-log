@@ -6,7 +6,7 @@ FROM node:24-alpine AS builder
 WORKDIR /app
 
 # Install Yarn (Alpine doesn't include it by default)
-RUN apk add --no-cache yarn
+RUN corepack enable
 
 # Copy package files first for better caching
 COPY package.json yarn.lock ./
@@ -32,7 +32,7 @@ FROM node:24-alpine AS runner
 WORKDIR /app
 
 # Install Yarn
-RUN apk add --no-cache yarn
+RUN corepack enable
 
 # Set production environment
 ENV NODE_ENV=production
