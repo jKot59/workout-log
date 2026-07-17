@@ -2,23 +2,15 @@ import { Button, Dropdown, Flex, MenuProps, Popconfirm, Tag } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { ColumnType } from 'antd/es/table';
 import { OneSet } from '@/shared/types/workout';
-
-interface IEquipment {
-  id: string;
-  name: string;
-}
-
-const availableEquipment: IEquipment[] = [
-  { id: '1', name: 'band' },
-  { id: '2', name: 'weight' },
-];
+import { IEquipmentStore } from '@/stores/equipment-store';
 
 export const getExerciseColumns = (
   handleRemoveEquipment: (date: OneSet['date'], equipmentId: OneSet['equipmentList'][0]['id']) => void,
   handleAddEquipment: (date: OneSet['date'], equipmentId: OneSet['equipmentList'][0]) => void,
   handleDelete: (date: string) => void,
   handleSave: (record: OneSet) => void,
-  setsCount: number
+  setsCount: number,
+  availableEquipment: IEquipmentStore['equipmentList']
 ) => {
   const setColumns: (ColumnType<NonNullable<OneSet>> & { editable?: boolean; dataIndex?: string; colIndex?: number })[] = Array.from(
     { length: setsCount },
@@ -33,15 +25,15 @@ export const getExerciseColumns = (
     })
   );
 
-  // Equipment menu items
+  // Equipment menu items (only unused values)
   const getEquipmentMenuItems = (record: OneSet): MenuProps['items'] => {
-    const onlyUnusedEquipment = availableEquipment.filter(
-      (curr) => record.equipmentList?.some((equipment) => equipment.id !== curr.id) || true
-    );
+    const usedIds = new Set(record.equipmentList.map(({ id }) => id));
+
+    const onlyUnusedEquipment = availableEquipment.filter(({ id }) => !usedIds.has(id));
 
     return onlyUnusedEquipment.map((curr) => ({
       key: curr.id,
-      label: curr.name,
+      label: curr.name ?? 'No name',
       onClick: () => handleAddEquipment(record.date, curr),
     }));
   };
@@ -65,7 +57,7 @@ export const getExerciseColumns = (
               ? record.equipmentList.map((equipment) => {
                   return (
                     <Tag key={equipment.id} closable={true} onClose={() => handleRemoveEquipment(record.date, equipment.id)}>
-                      {availableEquipment.find((item) => item.id === equipment.id)?.name ?? 'No name'}
+                      {availableEquipment?.find((item) => item.id === equipment.id)?.name ?? 'No name'}
                     </Tag>
                   );
                 })

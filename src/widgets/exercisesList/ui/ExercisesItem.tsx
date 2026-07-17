@@ -16,7 +16,8 @@ export function ExercisesItem({ name, sets }: IExercise) {
     handlers.handleAddEquipment,
     handlers.handleDelete,
     handlers.handleSave,
-    state.amountSets
+    state.amountSets,
+    state.equipmentList
   );
 
   const components = {

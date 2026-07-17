@@ -7,6 +7,8 @@ import './globals.css';
 import styles from './layout.module.scss';
 import { IndexedDBInitializer } from './providers/IndexedDBInitializer';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import Providers from './providers';
+import { EquipmentListInitializer } from './providers/EquipmentListInitializer';
 
 export const metadata: Metadata = {
   title: 'Workout log',
@@ -17,17 +19,20 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang='en'>
       <body>
-        <AntdRegistry>
-          <IndexedDBInitializer />
-          <Layout className={styles.layout}>
-            <AppSider aboveMenuSlot={<Logo />} />
+        <Providers>
+          <AntdRegistry>
+            <IndexedDBInitializer />
+            <EquipmentListInitializer />
+            <Layout className={styles.layout}>
+              <AppSider aboveMenuSlot={<Logo />} />
 
-            <Layout>
-              <MainHeader />
-              {children}
+              <Layout>
+                <MainHeader />
+                {children}
+              </Layout>
             </Layout>
-          </Layout>
-        </AntdRegistry>
+          </AntdRegistry>
+        </Providers>
       </body>
     </html>
   );

@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { transformDateToUserFriendly } from '@/shared/lib/helpers/transformDateToUserFriendly';
 import { useIndexedDBSyncWithZustand } from '@/shared/lib/hooks/useIndexedDBSyncWithZustand';
+import { useEquipmentStore } from '@/stores/equipment-store';
 
 interface UseExercisesItemProps {
   exerciseName: string;
@@ -15,6 +16,7 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
   const { db } = useProgramsStore();
   const { syncDBWithZustand } = useIndexedDBSyncWithZustand();
   const { workout_day: day }: { workout_day: DayOfWeek } = useParams();
+  const { equipmentList } = useEquipmentStore();
 
   const [dataSource, setDataSource] = useState<Required<IExercise>['sets']>([]);
   const [amountSets, setAmountSets] = useState(() =>
@@ -129,6 +131,7 @@ export function useExercisesItemLogic({ exerciseName, initialSets = [] }: UseExe
     state: {
       dataSource,
       amountSets,
+      equipmentList,
     },
     handlers: {
       handleAdd,
