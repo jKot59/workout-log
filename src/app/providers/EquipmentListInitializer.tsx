@@ -1,6 +1,6 @@
 'use client';
 import { useEquipmentStore } from '@/stores/equipment-store';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 export function EquipmentListInitializer() {
@@ -12,7 +12,7 @@ export function EquipmentListInitializer() {
     retry: false,
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!data) return;
 
     putEquipmentList(data);

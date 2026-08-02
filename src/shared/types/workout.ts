@@ -1,11 +1,10 @@
+import { IEquipmentStore } from '@/stores/equipment-store';
 import { DayOfWeek } from '@/widgets/appSider';
 
 export interface OneSet {
   date: string;
   reps: (string | undefined)[];
-  equipmentList: {
-    id: string;
-  }[];
+  equipmentList: IEquipmentStore['equipmentList'];
 }
 
 export interface IExercise {

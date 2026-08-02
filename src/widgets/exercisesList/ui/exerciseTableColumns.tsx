@@ -10,7 +10,7 @@ export const getExerciseColumns = (
   handleDelete: (date: string) => void,
   handleSave: (record: OneSet) => void,
   setsCount: number,
-  availableEquipment: IEquipmentStore['equipmentList']
+  equipmentList: IEquipmentStore['equipmentList']
 ) => {
   const setColumns: (ColumnType<NonNullable<OneSet>> & { editable?: boolean; dataIndex?: string; colIndex?: number })[] = Array.from(
     { length: setsCount },
@@ -29,7 +29,7 @@ export const getExerciseColumns = (
   const getEquipmentMenuItems = (record: OneSet): MenuProps['items'] => {
     const usedIds = new Set(record.equipmentList.map(({ id }) => id));
 
-    const onlyUnusedEquipment = availableEquipment.filter(({ id }) => !usedIds.has(id));
+    const onlyUnusedEquipment = equipmentList.filter(({ id }) => !usedIds.has(id));
 
     return onlyUnusedEquipment.map((curr) => ({
       key: curr.id,
@@ -50,27 +50,30 @@ export const getExerciseColumns = (
       title: 'EQUIPMENT',
       key: 'equipment',
       width: 100,
-      render: (_, record) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Flex gap={4}>
-            {record.equipmentList && record.equipmentList.length > 0
-              ? record.equipmentList.map((equipment) => {
-                  return (
-                    <Tag key={equipment.id} closable={true} onClose={() => handleRemoveEquipment(record.date, equipment.id)}>
-                      {availableEquipment?.find((item) => item.id === equipment.id)?.name ?? 'No name'}
-                    </Tag>
-                  );
-                })
-              : 'No equipment'}
-          </Flex>
+      render: (_, record) => {
+        console.log(record.equipmentList);
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Flex gap={4}>
+              {record.equipmentList && record.equipmentList.length > 0
+                ? record.equipmentList.map((equipment) => {
+                    return (
+                      <Tag key={equipment.id} closable={true} onClose={() => handleRemoveEquipment(record.date, equipment.id)}>
+                        {equipment.name}
+                      </Tag>
+                    );
+                  })
+                : 'No equipment'}
+            </Flex>
 
-          <Dropdown menu={{ items: getEquipmentMenuItems(record) }} trigger={['click']} disabled={availableEquipment.length === 0}>
-            {availableEquipment.length !== record.equipmentList?.length && (
-              <Button type='text' size='small' icon={<PlusOutlined />} disabled={availableEquipment.length === 0} />
-            )}
-          </Dropdown>
-        </div>
-      ),
+            <Dropdown menu={{ items: getEquipmentMenuItems(record) }} trigger={['click']} disabled={equipmentList.length === 0}>
+              {equipmentList.length !== record.equipmentList?.length && (
+                <Button type='text' size='small' icon={<PlusOutlined />} disabled={equipmentList.length === 0} />
+              )}
+            </Dropdown>
+          </div>
+        );
+      },
     },
     {
       title: 'ACTION',
