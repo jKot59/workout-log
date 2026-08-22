@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 TODO.txt
+AIAuthfeature.md
 
 # testing
 /coverage
