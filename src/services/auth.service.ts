@@ -1,3 +1,4 @@
+import apiFetch from '@/lib/apiFetch';
 import { useAuthStore } from '@/stores/auth-store';
 
 const BASE = '/api/auth';
@@ -19,8 +20,13 @@ export const authService = {
     return json;
   },
 
-  async logout() {
-    await fetch(`${BASE}/logout`, { method: 'POST', credentials: 'include' });
+  async signout() {
+    const res = await apiFetch(`${BASE}/signout`, { method: 'GET' });
+
+    if (!res.ok) {
+      throw new Error('Sign out failed');
+    }
+
     useAuthStore.getState().clear();
   },
 

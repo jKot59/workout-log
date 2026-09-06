@@ -16,7 +16,7 @@ export function RegisterModal({ open, onClose }: { open: boolean; onClose: () =>
 
   const onSubmit = handleSubmit(async (vals) => {
     try {
-      await fetch('/api/auth/register', {
+      await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(vals),

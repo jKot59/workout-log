@@ -7,7 +7,7 @@ export interface IAuthState {
   isAuthenticated: boolean;
   setToken: (token: string | null) => void;
   login: (token: string) => void;
-  logout: () => void;
+  signout: () => void;
   clear: () => void;
 }
 
@@ -16,7 +16,7 @@ export const useAuthStore = create<IAuthState>((set) => ({
   isAuthenticated: false,
   setToken: (token) => set({ accessToken: token, isAuthenticated: !!token }),
   login: (token) => set({ accessToken: token, isAuthenticated: true }),
-  logout: () => set({ accessToken: null, isAuthenticated: false }),
+  signout: () => set({ accessToken: null, isAuthenticated: false }),
   clear: () => set({ accessToken: null, isAuthenticated: false }),
 }));
 
