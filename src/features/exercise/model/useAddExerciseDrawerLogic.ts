@@ -2,21 +2,27 @@ import { useIndexedDBSyncWithZustand } from '@/shared/lib/hooks/useIndexedDBSync
 import { ExercisesDatabase, IExerciseItem } from '@/shared/lib/indexedDB/ExercisesDatabase';
 import { useProgramsStore } from '@/stores/programs-store';
 import { DayOfWeek } from '@/widgets/appSider';
+import { useQuery } from '@tanstack/react-query';
 import { Form } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export function useAddExerciseDrawerLogic(day: DayOfWeek) {
   const [isDrawerOpened, setIsDrawerOpened] = useState(false);
   const { db } = useProgramsStore();
   const { syncDBWithZustand } = useIndexedDBSyncWithZustand();
   const [isModalOpened, setIsModalOpened] = useState(false);
-  const [exercises, setExercises] = useState<IExerciseItem[]>([]);
   const [exercisesDB, setExercisesDB] = useState<ExercisesDatabase | null>(null);
 
   const showDrawer = () => setIsDrawerOpened(true);
   const onCloseDrawer = () => setIsDrawerOpened(false);
 
   const [form] = Form.useForm();
+
+  const { data: exercises = [] } = useQuery<IExerciseItem[]>({
+    queryKey: ['exercises'],
+    queryFn: () => fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}api/exercises`).then((res) => res.json()),
+    retry: false,
+  });
 
   // Helper function to safely extract thumbUrl
   const getThumbUrlFromForm = (imageField: unknown): string | undefined => {
@@ -38,7 +44,7 @@ export function useAddExerciseDrawerLogic(day: DayOfWeek) {
         muscleGroup: values.muscleGroup,
       });
 
-      await loadExercises(exercisesDB);
+      // await loadExercises(exercisesDB);
 
       form.resetFields();
       setIsModalOpened(false);
@@ -58,31 +64,12 @@ export function useAddExerciseDrawerLogic(day: DayOfWeek) {
     onCloseDrawer();
   };
 
-  const loadExercises = async (database: ExercisesDatabase) => {
-    const allExercises = await database.getAllItems();
-    setExercises(allExercises);
-  };
-
   const handleDeleteExercise = async (id: number) => {
     if (exercisesDB) {
       await exercisesDB.deleteExerciseById(id);
-      await loadExercises(exercisesDB);
+      // await loadExercises(exercisesDB);
     }
   };
-
-  useEffect(() => {
-    const exercisesDB = new ExercisesDatabase();
-
-    const init = async () => {
-      await exercisesDB.openDB();
-      setExercisesDB(exercisesDB);
-      await loadExercises(exercisesDB);
-    };
-
-    init();
-
-    return () => exercisesDB.closeDB();
-  }, []);
 
   return {
     state: {

@@ -8,19 +8,7 @@ export interface IExerciseItem extends BaseItem {
   muscleGroup?: string;
 }
 
-const PRESET_EXERCISES: IExerciseItem[] = [
-  { name: 'Bulgarian split squats', image: '/images/exercises/bulgarian_split_squats.jpeg', muscleGroup: 'legs' },
-  { name: 'Calf raises', image: '/images/exercises/calf_raises.jpeg', muscleGroup: 'legs' },
-  { name: 'Hindu push-ups', image: '/images/exercises/hindu_pushups.jpeg', muscleGroup: 'chest' },
-  { name: 'Parallel bar dips', image: '/images/exercises/dips.jpeg', muscleGroup: 'chest' },
-  { name: 'Pull-ups', image: '/images/exercises/pull_ups.jpeg', muscleGroup: 'back' },
-  { name: 'Knee to chest on parallel bars', image: '/images/exercises/knees_to_chest.jpeg', muscleGroup: 'abdominal' },
-  { name: 'Biceps pull-ups', image: '/images/exercises/biceps_pull_ups.jpeg', muscleGroup: 'arms' },
-];
-
 export class ExercisesDatabase extends BaseIndexedDBManager<IExerciseItem> {
-  private presetExercisesAdded: boolean = false;
-
   constructor() {
     super('ExercisesDB', 1, 'exercises');
   }
@@ -33,9 +21,6 @@ export class ExercisesDatabase extends BaseIndexedDBManager<IExerciseItem> {
       request.onerror = () => reject(request.error);
       request.onsuccess = async () => {
         this.db = request.result;
-
-        // Check and add preset exercises after successful open
-        await this.ensurePresetExercises();
 
         resolve(this.db);
       };
@@ -55,25 +40,6 @@ export class ExercisesDatabase extends BaseIndexedDBManager<IExerciseItem> {
         }
       };
     });
-  }
-
-  private async ensurePresetExercises(): Promise<void> {
-    if (this.presetExercisesAdded) return;
-
-    try {
-      const existingExercises = await this.getAllItems();
-
-      // Only add presets if database is empty
-      if (existingExercises.length === 0) {
-        for (const exercise of PRESET_EXERCISES) {
-          await this.addExercise(exercise);
-        }
-      }
-
-      this.presetExercisesAdded = true;
-    } catch (error) {
-      console.error('Failed to add preset exercises:', error);
-    }
   }
 
   // Business-specific methods for exercises
