@@ -1,11 +1,11 @@
 import apiFetch from '@/lib/apiFetch';
 import { useAuthStore } from '@/stores/auth-store';
 
-const BASE = '/api/auth';
+const BASE = 'api/auth';
 
 export const authService = {
   async signin(payload: { username: string; password: string }) {
-    const res = await fetch(`${BASE}/signin`, {
+    const res = await apiFetch(`${BASE}/signin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -31,7 +31,7 @@ export const authService = {
   },
 
   async refresh() {
-    const res = await fetch(`${BASE}/refresh`, { method: 'POST', credentials: 'include' });
+    const res = await apiFetch(`${BASE}/refresh`, { method: 'POST', credentials: 'include' });
     const json = await res.json().catch(() => null);
     if (!res.ok) throw json || new Error('Refresh failed');
     const token = json?.accessToken;

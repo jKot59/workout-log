@@ -14,17 +14,19 @@ export function AddExerciseDrawer({ day }: { day: DayOfWeek }) {
 
   return (
     <>
-      <Button onClick={handlers.showDrawer}>Add exercise</Button>
+      <Button className={styles.btn} onClick={handlers.showDrawer}>
+        Add exercise
+      </Button>
       <Drawer title='Select the exercise' placement='bottom' closable={false} onClose={handlers.onCloseDrawer} open={state.isDrawerOpened}>
         <div className={styles.drawer_content}>
           <Exercise name={'Add new exercise'} image={'/images/exercises/add_new_image.jpeg'} onClick={() => handlers.setIsModalOpened(true)} />
 
           {state.exercises.map((exercise) => (
             <Exercise
-              key={exercise.name}
+              key={exercise.id}
               name={exercise.name}
               image={exercise.image}
-              onClick={() => handlers.selectExerciseForTraining(exercise.name)}
+              onClick={() => handlers.selectExerciseForTraining(exercise.id)}
             />
           ))}
         </div>

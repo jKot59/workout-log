@@ -4,11 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { TuseAppSiderLogic } from '../../model/useAppSiderLogic';
 import { MenuItem } from '../../model/types';
-
-interface ISiderMenuProps {
-  menuItems: TuseAppSiderLogic['state']['menuItems'];
-  isMenuItemsLoading: TuseAppSiderLogic['state']['isMenuItemsLoading'];
-}
+import { useQuery } from '@tanstack/react-query';
+import { IProgram } from '@/shared/types/workout';
+import apiFetch from '@/lib/apiFetch';
 
 function createMenuItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
   return {
@@ -19,10 +17,15 @@ function createMenuItem(label: React.ReactNode, key: React.Key, icon?: React.Rea
   } as MenuItem;
 }
 
-export function SiderMenu({ menuItems, isMenuItemsLoading }: ISiderMenuProps) {
+export function SiderMenu() {
   const pathname = usePathname();
+  const { data: programs = [], isLoading: isProgramsLoading } = useQuery<IProgram[]>({
+    queryKey: ['allPrograms'],
+    queryFn: () => apiFetch('api/user-programs').then((res) => res.json()),
+    retry: false,
+  });
 
-  if (isMenuItemsLoading)
+  if (isProgramsLoading)
     return (
       <div className={styles.skeleton}>
         <Skeleton.Button active block className={styles.skeleton_button} />
@@ -30,7 +33,7 @@ export function SiderMenu({ menuItems, isMenuItemsLoading }: ISiderMenuProps) {
       </div>
     );
 
-  if (!menuItems.length) return <div className={styles.empty_day}>No trainings</div>;
+  if (!programs.length) return <div className={styles.empty_day}>No trainings</div>;
 
   return (
     <Menu
@@ -38,12 +41,12 @@ export function SiderMenu({ menuItems, isMenuItemsLoading }: ISiderMenuProps) {
       selectedKeys={[pathname]}
       theme='dark'
       mode='inline'
-      items={menuItems.map((day) =>
+      items={programs.map((day) =>
         createMenuItem(
-          <Link data-testid='training day' href={day} className={styles.day}>
-            {day}
+          <Link data-testid='training day' href={day.name} className={styles.day}>
+            {day.name}
           </Link>,
-          '/' + day
+          '/' + day.name
         )
       )}
     />

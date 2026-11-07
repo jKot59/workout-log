@@ -5,9 +5,14 @@ import authService from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth-store';
 
 const pushMock = vi.fn();
+const clearQueryCacheMock = vi.fn();
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: pushMock }),
+}));
+
+vi.mock('@tanstack/react-query', () => ({
+  useQueryClient: () => ({ clear: clearQueryCacheMock }),
 }));
 
 vi.mock('@/services/auth.service', () => ({
@@ -35,6 +40,19 @@ describe('SignOutBtn', () => {
 
     await waitFor(() => {
       expect(pushMock).not.toHaveBeenCalled();
+      expect(clearQueryCacheMock).not.toHaveBeenCalled();
+    });
+  });
+
+  it('clears the query cache and redirects after successful signout', async () => {
+    vi.mocked(authService.signout).mockResolvedValue(undefined);
+
+    render(<SignOutBtn />);
+    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }));
+
+    await waitFor(() => {
+      expect(clearQueryCacheMock).toHaveBeenCalledTimes(1);
+      expect(pushMock).toHaveBeenCalledWith('/');
     });
   });
 });

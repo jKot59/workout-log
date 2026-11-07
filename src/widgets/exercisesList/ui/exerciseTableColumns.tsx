@@ -1,18 +1,20 @@
 import { Button, Dropdown, Flex, MenuProps, Popconfirm, Tag } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { ColumnType } from 'antd/es/table';
-import { OneSet } from '@/shared/types/workout';
+import { IExerciseRecord, OneSet } from '@/shared/types/workout';
 import { IEquipmentStore } from '@/stores/equipment-store';
+import { transformDateToUserFriendly } from '@/shared/lib/helpers/transformDateToUserFriendly';
+import { IEditableCellProps } from '../model/types';
 
 export const getExerciseColumns = (
-  handleRemoveEquipment: (date: OneSet['date'], equipmentId: OneSet['equipmentList'][0]['id']) => void,
-  handleAddEquipment: (date: OneSet['date'], equipmentId: OneSet['equipmentList'][0]) => void,
-  handleDelete: (date: string) => void,
-  handleSave: (record: OneSet) => void,
+  handleRemoveEquipment: (date: OneSet['id'], equipmentId: OneSet['equipmentList'][0]['id']) => void,
+  handleAddEquipment: (date: OneSet['id'], equipmentId: OneSet['equipmentList'][0]) => void,
+  handleDelete: (date: OneSet['id']) => void,
+  handleSave: IEditableCellProps['handleSave'],
   setsCount: number,
   equipmentList: IEquipmentStore['equipmentList']
 ) => {
-  const setColumns: (ColumnType<NonNullable<OneSet>> & { editable?: boolean; dataIndex?: string; colIndex?: number })[] = Array.from(
+  const setColumns: (ColumnType<NonNullable<IExerciseRecord>> & { editable?: boolean; dataIndex?: string; colIndex?: number })[] = Array.from(
     { length: setsCount },
     (_, index) => ({
       title: `SET ${index + 1}`,
@@ -21,7 +23,7 @@ export const getExerciseColumns = (
       width: '100px',
       editable: true,
       colIndex: index,
-      render: (_: unknown, record: NonNullable<OneSet>) => record.reps[index],
+      render: (_: unknown, record: NonNullable<IExerciseRecord>) => record.exerciseSets[index].reps,
     })
   );
 
@@ -34,47 +36,47 @@ export const getExerciseColumns = (
     return onlyUnusedEquipment.map((curr) => ({
       key: curr.id,
       label: curr.name ?? 'No name',
-      onClick: () => handleAddEquipment(record.date, curr),
+      onClick: () => handleAddEquipment(record.id, curr),
     }));
   };
 
-  const defaultColumns: (ColumnType<OneSet> & { editable?: boolean; dataIndex?: string; colIndex?: number })[] = [
+  const defaultColumns: (ColumnType<IExerciseRecord> & { editable?: boolean; dataIndex?: string; colIndex?: number })[] = [
     {
       title: 'DATE',
       dataIndex: 'date',
       key: 'date',
       width: '120px',
+      render: (_, record) => transformDateToUserFriendly(String(record.date)),
     },
     ...setColumns,
-    {
-      title: 'EQUIPMENT',
-      key: 'equipment',
-      width: 100,
-      render: (_, record) => {
-        console.log(record.equipmentList);
-        return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Flex gap={4}>
-              {record.equipmentList && record.equipmentList.length > 0
-                ? record.equipmentList.map((equipment) => {
-                    return (
-                      <Tag key={equipment.id} closable={true} onClose={() => handleRemoveEquipment(record.date, equipment.id)}>
-                        {equipment.name}
-                      </Tag>
-                    );
-                  })
-                : 'No equipment'}
-            </Flex>
+    // {
+    //   title: 'EQUIPMENT',
+    //   key: 'equipment',
+    //   width: 100,
+    //   render: (_, record) => {
+    //     return (
+    //       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+    //         <Flex gap={4}>
+    //           {record.equipmentList && record.equipmentList.length > 0
+    //             ? record.equipmentList.map((equipment) => {
+    //                 return (
+    //                   <Tag key={equipment.id} closable={true} onClose={() => handleRemoveEquipment(record.id, equipment.id)}>
+    //                     {equipment.name}
+    //                   </Tag>
+    //                 );
+    //               })
+    //             : 'No equipment'}
+    //         </Flex>
 
-            <Dropdown menu={{ items: getEquipmentMenuItems(record) }} trigger={['click']} disabled={equipmentList.length === 0}>
-              {equipmentList.length !== record.equipmentList?.length && (
-                <Button type='text' size='small' icon={<PlusOutlined />} disabled={equipmentList.length === 0} />
-              )}
-            </Dropdown>
-          </div>
-        );
-      },
-    },
+    //         {/* <Dropdown menu={{ items: getEquipmentMenuItems(record) }} trigger={['click']} disabled={equipmentList.length === 0}>
+    //           {equipmentList.length !== record.equipmentList?.length && (
+    //             <Button type='text' size='small' icon={<PlusOutlined />} disabled={equipmentList.length === 0} />
+    //           )}
+    //         </Dropdown> */}
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       title: 'ACTION',
       key: 'operation',
@@ -83,7 +85,7 @@ export const getExerciseColumns = (
         <Popconfirm
           title='Delete set'
           description='Are you sure you want to delete this set?'
-          onConfirm={() => handleDelete(record.date)}
+          onConfirm={() => handleDelete(record.id)}
           okText='Yes'
           cancelText='No'
         >
@@ -98,7 +100,7 @@ export const getExerciseColumns = (
 
     return {
       ...col,
-      onCell: (record: OneSet) => ({
+      onCell: (record: IExerciseRecord) => ({
         record,
         editable: col.editable,
         dataIndex: col.dataIndex,
@@ -106,7 +108,7 @@ export const getExerciseColumns = (
         handleSave,
         columnIndex: col.colIndex, // Pass column index
         totalColumns: setsCount, // Pass total number of set columns
-        currentRowKey: record.date, // Pass row key
+        currentRowKey: record.id, // Pass row key
       }),
     };
   });

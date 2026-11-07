@@ -2,7 +2,6 @@
 
 import { Modal, Form, Input, Button } from 'antd';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 
 type FormValues = {
   email: string;
@@ -12,7 +11,6 @@ type FormValues = {
 
 export function RegisterModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { register, handleSubmit } = useForm<FormValues>();
-  const router = useRouter();
 
   const onSubmit = handleSubmit(async (vals) => {
     try {
@@ -23,8 +21,6 @@ export function RegisterModal({ open, onClose }: { open: boolean; onClose: () =>
         credentials: 'include',
       });
       onClose();
-      router.push('/dashboard');
-      // window.location.href = '/dashboard';
     } catch (e) {
       console.error(e);
     }

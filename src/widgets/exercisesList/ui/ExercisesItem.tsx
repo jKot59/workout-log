@@ -1,22 +1,25 @@
 import { Button } from '@/shared/ui/button/Button';
-import { IExercise, OneSet } from '@/shared/types/workout';
+import { IExercise, IExerciseRecord } from '@/shared/types/workout';
 import { Card, Flex, Table, TableProps } from 'antd';
 import { useExercisesItemLogic } from '../model/useExercisesItemLogic';
 import { EditableCell } from './EditableCell';
 import { EditableRow } from './EditableRow';
 import { getExerciseColumns } from './exerciseTableColumns';
+import { DeleteProgramExerciseBtn } from '@/features/deleteProgramExerciseBtn';
 
-type ColumnTypes = Exclude<TableProps<OneSet>['columns'], undefined>;
+type ColumnTypes = Exclude<TableProps<IExerciseRecord>['columns'], undefined>;
 
-export function ExercisesItem({ name, sets }: IExercise) {
-  const { state, handlers } = useExercisesItemLogic({ exerciseName: name, initialSets: sets });
+export function ExercisesItem({ exercise }: { exercise: IExercise }) {
+  const { state, handlers } = useExercisesItemLogic(exercise);
 
   const columns = getExerciseColumns(
     handlers.handleRemoveEquipment,
     handlers.handleAddEquipment,
     handlers.handleDelete,
     handlers.handleSave,
-    state.amountSets,
+    exercise.exerciseRecords.reduce((acc, curr) => {
+      return curr.exerciseSets.length > acc ? curr.exerciseSets.length : acc;
+    }, 0),
     state.equipmentList
   );
 
@@ -29,23 +32,32 @@ export function ExercisesItem({ name, sets }: IExercise) {
 
   return (
     <Card
-      title={name}
+      title={
+        <Flex align='center' gap='small'>
+          {state.catalogExercise?.name}
+          <DeleteProgramExerciseBtn
+            data-testid='delete exercise'
+            programExerciseId={exercise.id}
+            // className={styles.delete_btn}
+          />
+        </Flex>
+      }
       extra={
         <Flex gap={'small'}>
-          <Button onClick={handlers.handleAdd}>Add a row</Button>
-          {state.amountSets < 10 && <Button onClick={handlers.handleAddSet}>Add a set</Button>}
+          <Button onClick={() => handlers.onAddExerciseRecord(exercise.id)}>New record</Button>
+          {2 < 10 && <Button onClick={handlers.handleAddSet}>Add a set</Button>}
         </Flex>
       }
     >
-      <Table<OneSet>
+      <Table<IExerciseRecord>
         rowHoverable={false}
         components={components}
         rowClassName={() => 'editable-row'}
         bordered
         size={'small'}
-        dataSource={state.dataSource}
+        dataSource={exercise.exerciseRecords}
         columns={columns as ColumnTypes}
-        rowKey={(record) => record.date}
+        rowKey={(record) => record.id}
       />
     </Card>
   );

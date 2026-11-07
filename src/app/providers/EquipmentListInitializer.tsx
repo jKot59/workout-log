@@ -2,13 +2,14 @@
 import { useEquipmentStore } from '@/stores/equipment-store';
 import { useLayoutEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-
+import apiFetch from '@/lib/apiFetch';
+//TODO remove it and call where it's needed
 export function EquipmentListInitializer() {
   const { putEquipmentList } = useEquipmentStore();
 
   const { data } = useQuery({
     queryKey: ['equipment'],
-    queryFn: () => fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}api/equipment`).then((res) => res.json()),
+    queryFn: () => apiFetch('api/equipment').then((res) => res.json()),
     retry: false,
   });
 

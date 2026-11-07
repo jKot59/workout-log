@@ -3,18 +3,7 @@
 import React from 'react';
 import { Form, Input } from 'antd';
 import { useEditableCellLogic } from '../model/useEditableCellLogic';
-import { OneSet } from '@/shared/types/workout';
-
-interface EditableCellProps {
-  title: React.ReactNode;
-  editable: boolean;
-  dataIndex: keyof OneSet | string;
-  record: OneSet;
-  handleSave: (record: OneSet) => void;
-  columnIndex?: number;
-  totalColumns?: number;
-  currentRowKey?: string;
-}
+import { IEditableCellProps } from '../model/types';
 
 export function EditableCell({
   title,
@@ -27,10 +16,9 @@ export function EditableCell({
   totalColumns,
   currentRowKey,
   ...restProps
-}: React.PropsWithChildren<EditableCellProps>) {
+}: React.PropsWithChildren<IEditableCellProps>) {
   const { editing, inputRef, save, toggleEdit } = useEditableCellLogic({
     editable,
-    dataIndex,
     record,
     handleSave,
     columnIndex,
@@ -54,7 +42,12 @@ export function EditableCell({
   }
 
   return (
-    <td {...restProps} data-col-index={columnIndex} data-row-key={currentRowKey}>
+    <td
+      {...restProps}
+      title={typeof title === 'string' ? title : undefined}
+      data-col-index={columnIndex}
+      data-row-key={currentRowKey}
+    >
       {childNode}
     </td>
   );

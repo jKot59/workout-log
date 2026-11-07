@@ -14,7 +14,7 @@ export function AppSider({ aboveMenuSlot }: Readonly<{ aboveMenuSlot: React.Reac
     <Sider collapsible collapsed={state.collapsed} onCollapse={(value) => handlers.setCollapsed(value)}>
       {aboveMenuSlot}
 
-      <SiderMenu menuItems={state.menuItems} isMenuItemsLoading={state.isMenuItemsLoading} />
+      <SiderMenu />
 
       <div className={styles.days_list}>
         {state.availableDays.length && (

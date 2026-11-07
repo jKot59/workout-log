@@ -1,27 +1,36 @@
-import { useIndexedDBSyncWithZustand } from '@/shared/lib/hooks/useIndexedDBSyncWithZustand';
-import { ExercisesDatabase, IExerciseItem } from '@/shared/lib/indexedDB/ExercisesDatabase';
-import { useProgramsStore } from '@/stores/programs-store';
+import apiFetch from '@/lib/apiFetch';
+import { ICatalogExercise, IProgram } from '@/shared/types/workout';
 import { DayOfWeek } from '@/widgets/appSider';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Form } from 'antd';
 import { useState } from 'react';
 
 export function useAddExerciseDrawerLogic(day: DayOfWeek) {
   const [isDrawerOpened, setIsDrawerOpened] = useState(false);
-  const { db } = useProgramsStore();
-  const { syncDBWithZustand } = useIndexedDBSyncWithZustand();
   const [isModalOpened, setIsModalOpened] = useState(false);
-  const [exercisesDB, setExercisesDB] = useState<ExercisesDatabase | null>(null);
+  const queryClient = useQueryClient();
 
   const showDrawer = () => setIsDrawerOpened(true);
   const onCloseDrawer = () => setIsDrawerOpened(false);
 
   const [form] = Form.useForm();
 
-  const { data: exercises = [] } = useQuery<IExerciseItem[]>({
-    queryKey: ['exercises'],
-    queryFn: () => fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}api/exercises`).then((res) => res.json()),
+  const { data: exercises = [] } = useQuery<ICatalogExercise[]>({
+    queryKey: ['catalogExercises'],
+    queryFn: () => apiFetch('api/exercises').then((res) => res.json()),
     retry: false,
+  });
+
+  const addExerciseToProgram = useMutation({
+    mutationFn: async ({ programId, exerciseId }: { programId: IProgram['id']; exerciseId: ICatalogExercise['id'] }) => {
+      return apiFetch('api/user-programs/add-exercise', {
+        method: 'POST',
+        body: JSON.stringify({ programId, exerciseId }),
+      });
+    },
+
+    //TODO useOptimistic
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['userExercises'] }),
   });
 
   // Helper function to safely extract thumbUrl
@@ -34,41 +43,40 @@ export function useAddExerciseDrawerLogic(day: DayOfWeek) {
 
   const handleSubmitNewExercise = async () => {
     try {
-      const values: IExerciseItem = await form.validateFields();
+      // const values: ICatalogExercise = await form.validateFields();
 
-      if (!exercisesDB) return console.log('no db found');
+      // if (!exercisesDB) return console.log('no db found');
 
-      await exercisesDB.addExercise({
-        name: values.name,
-        image: getThumbUrlFromForm(values.image),
-        muscleGroup: values.muscleGroup,
-      });
+      // await exercisesDB.addExercise({
+      //   name: values.name,
+      //   image: getThumbUrlFromForm(values.image),
+      //   muscleGroup: values.muscleGroup,
+      // });
 
-      // await loadExercises(exercisesDB);
+      // // await loadExercises(exercisesDB);
 
-      form.resetFields();
+      // form.resetFields();
       setIsModalOpened(false);
     } catch {
       // validation errors
     }
   };
 
-  const selectExerciseForTraining = async (exercise: string) => {
-    const programData = await db?.getProgramByName(day);
+  const selectExerciseForTraining = async (exerciseId: ICatalogExercise['id']) => {
+    const data = queryClient.getQueryData<IProgram[]>(['allPrograms']);
+    const programId = data?.find((program) => program.name === day)?.id;
 
-    programData?.exercises.push({ name: exercise });
+    if (!programId) throw new Error('Program where to add selected exercise is not exist');
 
-    await db?.updateItem({ name: day, exercises: programData?.exercises ?? [] });
-    syncDBWithZustand();
-
+    addExerciseToProgram.mutate({ programId, exerciseId });
     onCloseDrawer();
   };
 
   const handleDeleteExercise = async (id: number) => {
-    if (exercisesDB) {
-      await exercisesDB.deleteExerciseById(id);
-      // await loadExercises(exercisesDB);
-    }
+    // if (exercisesDB) {
+    //   await exercisesDB.deleteExerciseById(id);
+    // await loadExercises(exercisesDB);
+    // }
   };
 
   return {

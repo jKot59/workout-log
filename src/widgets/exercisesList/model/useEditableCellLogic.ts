@@ -3,21 +3,15 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { InputRef } from 'antd';
 import { EditableContext } from '../ui/EditableRow';
-import { OneSet } from '@/shared/types/workout';
+import { IEditableCellProps } from './types';
 
-interface UseEditableCellLogicProps {
-  editable: boolean;
-  dataIndex: keyof OneSet | string;
-  record: OneSet;
-  handleSave: (record: OneSet) => void;
-  columnIndex?: number;
-  totalColumns?: number;
-  currentRowKey?: string;
-}
+type UseEditableCellLogicProps = Pick<
+  IEditableCellProps,
+  'editable' | 'record' | 'handleSave' | 'columnIndex' | 'totalColumns' | 'currentRowKey'
+>;
 
 export function useEditableCellLogic({
   editable,
-  dataIndex,
   record,
   handleSave,
   columnIndex,
@@ -66,9 +60,13 @@ export function useEditableCellLogic({
   const save = async () => {
     try {
       const values = await form.validateFields();
-      const recordReps = [...record.reps];
+      // const recordReps = [...record.exerciseSets[columnIndex + 1].reps];
+      const recordReps = record.exerciseSets.find((set) => set.setNumber === columnIndex + 1);
+
+      if (recordReps === undefined) throw Error('record not find');
+
       const newValue = Object.values(values)[0];
-      const isValueChanged = newValue === recordReps[+Object.keys(values)[0]];
+      const isValueChanged = +newValue === +recordReps.reps;
 
       if (isValueChanged) {
         setEditing(false);
@@ -76,9 +74,9 @@ export function useEditableCellLogic({
         return;
       }
 
-      recordReps[+Object.keys(values)[0]] = newValue === '' || newValue === undefined ? '0' : String(newValue);
+      recordReps.reps = newValue === '' || newValue === undefined ? '0' : String(newValue);
 
-      handleSave({ ...record, reps: recordReps });
+      handleSave(recordReps.id, recordReps.setNumber, recordReps.reps);
       moveToNextCell();
 
       if (columnIndex === undefined || columnIndex === totalColumns! - 1) {

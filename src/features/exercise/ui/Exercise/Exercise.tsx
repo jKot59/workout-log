@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import styles from './exercise.module.scss';
-import { IExerciseItem } from '@/shared/lib/indexedDB/ExercisesDatabase';
 import { HtmlHTMLAttributes } from 'react';
 import { Flex } from 'antd';
+import { ICatalogExercise } from '@/shared/types/workout';
 
-interface IExerciseProps extends Pick<IExerciseItem, 'name' | 'image'>, HtmlHTMLAttributes<HTMLElement> {}
+interface IExerciseProps extends Pick<ICatalogExercise, 'name' | 'image'>, HtmlHTMLAttributes<HTMLElement> {}
 
 export function Exercise({ name, image, ...restProps }: IExerciseProps) {
   return (

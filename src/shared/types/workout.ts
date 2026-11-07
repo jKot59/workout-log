@@ -2,17 +2,35 @@ import { IEquipmentStore } from '@/stores/equipment-store';
 import { DayOfWeek } from '@/widgets/appSider';
 
 export interface OneSet {
-  date: string;
-  reps: (string | undefined)[];
+  id: number;
+  setNumber: number;
+  reps: string;
   equipmentList: IEquipmentStore['equipmentList'];
 }
 
 export interface IExercise {
-  name: string;
-  sets?: OneSet[];
+  id: number;
+  catalogExerciseId: number;
+  exerciseRecords: IExerciseRecord[];
+}
+
+export interface IExerciseRecord {
+  id: number;
+  date: Date;
+  exerciseSets: OneSet[];
 }
 
 export interface IProgram {
-  name: DayOfWeek;
-  exercises: IExercise[];
+  id: number;
+  name: string;
+  programExercises: IExercise[];
+}
+
+export interface ICatalogExercise {
+  id: number;
+  name: string;
+  image?: string; // Can be base64 string, URL, or blob
+  imageType?: 'url' | 'base64' | 'blob';
+  description?: string;
+  muscleGroup?: string;
 }

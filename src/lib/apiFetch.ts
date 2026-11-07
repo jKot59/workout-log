@@ -23,7 +23,7 @@ export async function apiFetch(input: FetchInput, init: RequestInit = {}) {
   };
 
   const doFetch = async (attempt = 0): Promise<Response> => {
-    const res = await fetch(input, merged);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}${input}`, merged);
     if (res.status !== 401) return res;
 
     // try refresh once
@@ -45,7 +45,7 @@ export async function apiFetch(input: FetchInput, init: RequestInit = {}) {
         // retry original request with new token
         const newHeaders = new Headers(merged.headers as HeadersInit);
         newHeaders.set('Authorization', `Bearer ${newToken}`);
-        const retried = await fetch(input, { ...merged, headers: newHeaders });
+        const retried = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}${input}`, { ...merged, headers: newHeaders });
         return retried;
       }
     } catch (e) {

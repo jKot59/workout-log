@@ -3,7 +3,6 @@
 import { Modal, Form, Input, Button } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
 import { authService } from '@/services/auth.service';
-import { useRouter } from 'next/navigation';
 
 type FormValues = {
   username: string;
@@ -11,16 +10,14 @@ type FormValues = {
 };
 
 export function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { control, handleSubmit } = useForm<FormValues>();
-  const router = useRouter();
+  const { control, handleSubmit } = useForm<FormValues>(); //TODO useActionForm better?
 
   const onSubmit = handleSubmit(async (vals) => {
     try {
       await authService.signin(vals);
       onClose();
-      router.push('/dashboard');
     } catch (e) {
-      // TODO: show error
+      // TODO: show toster error
       console.error(e);
     }
   });
